@@ -1,7 +1,28 @@
-+<script setup lang="ts">
-import { toTypedSchema } from '@vee-validate/zod'
-import { Field, useForm } from 'vee-validate'
-import { z } from 'zod'
+<script setup lang="ts">
+
+import { toTypedSchema } from '@vee-validate/zod';
+import { Field, useForm } from 'vee-validate';
+import { z } from 'zod';
+
+import {useAuthStore} from "~/store/auth";
+import {storeToRefs} from 'pinia';
+
+
+
+const auth = useAuthStore();
+
+const signup = auth.signup;
+
+
+const {loading, type, message} = storeToRefs(auth);
+
+
+const accountCreated = useState('accountCreated', ()=> false)
+const codeSent = useState('codeSent', ()=> false)
+const shouldNavigate = useState('shouldNavigate', ()=> false)
+
+
+
 
 definePageMeta({
   layout: 'default',
@@ -36,6 +57,7 @@ const isValidIranianPhoneNumber = (value: string): boolean => {
 // It's used to define the shape that the form data will have
 const zodSchema = z
     .object({
+      username:z.string(),
       phone_number: z.string().refine((value) => isValidIranianPhoneNumber(value), {
         message: VALIDATION_TEXT.PHONE_NUMBER_REQUIRED,
       }),
@@ -75,6 +97,7 @@ type FormInput = z.infer<typeof zodSchema>
 
 const validationSchema = toTypedSchema(zodSchema)
 const initialValues = computed<FormInput>(() => ({
+  username: '',
   phone_number: '',
   password: '',
   confirmPassword: '',
@@ -92,34 +115,59 @@ const toaster = useToaster()
 // This is where you would send the form data to the server
 const onSubmit = handleSubmit(async (values) => {
   // here you have access to the validated form values
-  console.log('auth-success', values)
+  await signup(values.username, values.phone_number, values.password, values.confirmPassword)
+  console.log('auth-success', values, typeof values)
 
   try {
     // fake delay, this will make isSubmitting value to be true
     await new Promise((resolve) => setTimeout(resolve, 4000))
 
     toaster.clearAll()
-    toaster.show({
-      title: 'Success',
-      message: `Account created!`,
-      color: 'success',
-      icon: 'ph:user-circle-fill',
-      closable: true,
-    })
+      await toaster.show({
+          title: type.value || undefined, // Use type.value, and provide a default value if it's null
+          message: message.value || '', // Similarly, handle message.value if it's null
+          color: type.value || undefined, // Use type.value for color if it's a ref
+          icon: 'ph:user-circle-fill',
+          closable: true,
+      })
   } catch (error: any) {
     // handle error
 
     return
   }
 
-  router.push('/layouts/onboarding-1')
+  if (shouldNavigate) {
+      // await router.push('/')
+  }
 })
 
-const showOtpPanel = ref(false);
+const showOtpPanel = ref(true);
 
 const toggleOtpPanel = () => {
   showOtpPanel.value = !showOtpPanel.value;
 };
+
+onMounted(() => {
+    watch([type, message], () => {
+        if (type.value === 'success' && message.value === 'we sent you a code') {
+            codeSent.value = true;
+            toggleOtpPanel();
+        }
+
+        if (type.value === 'success' && message.value === 'your account has been created') {
+            accountCreated.value = true;
+        }
+    });
+
+    watch([accountCreated, loading], () => {
+        if (accountCreated.value && !loading.value) {
+            setTimeout(() => {
+                shouldNavigate.value = true;
+            }, 5000);
+        }
+    });
+});
+
 </script>
 
 <template>
@@ -146,6 +194,24 @@ const toggleOtpPanel = () => {
               </div>
               <div class="px-8 py-4">
                 <div class="mb-4 space-y-4">
+                  <Field
+                          v-slot="{ field, errorMessage, handleChange, handleBlur }"
+                          name="username"
+                  >
+                    <BaseInput
+                      :model-value="field.value"
+                      :error="errorMessage"
+                      :disabled="isSubmitting"
+                      type="string"
+                      label="Username"
+                      placeholder="username"
+                      :classes="{
+                        input: 'h-12',
+                      }"
+                      @update:model-value="handleChange"
+                      @blur="handleBlur"
+                    />
+                  </Field>
                   <Field
                       v-slot="{ field, errorMessage, handleChange, handleBlur }"
                       name="phone_number"
@@ -265,7 +331,10 @@ const toggleOtpPanel = () => {
     <!-- Conditionally render the OTP panel -->
     <OtpPanel
       v-if="showOtpPanel"
+
       class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded shadow-md transition-all duration-300 z-20"
     />
+
+
   </div>
 </template>

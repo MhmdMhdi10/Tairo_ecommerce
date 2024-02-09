@@ -36,7 +36,9 @@ export default defineNuxtConfig({
      * wich is a carousel component used in the demo
      * @see https://github.com/cpreston321/nuxt-swiper
      */
+    '@pinia/nuxt',
     'nuxt-swiper',
+
   ],
   css: [
     '~/assets/css/colors.css',

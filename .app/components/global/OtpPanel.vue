@@ -42,7 +42,7 @@
 
         <div class="mb-6">
           <BaseButton
-            :disabled="isSubmitting"
+            :disabled="isSubmitting || resendTimer > 0"
             :loading="isSubmitting"
             type="submit"
             color="primary"
@@ -52,11 +52,17 @@
           </BaseButton>
         </div>
 
+        <!-- Timer display -->
+        <div v-if="resendTimer>0" class="text-muted-400 mt-2 text-center">
+          Resend OTP in {{resendTimer}} seconds
+        </div>
+
         <!-- Link to resend OTP or go back to login -->
         <p class="text-muted-400 mt-4 flex justify-between font-sans text-sm leading-5">
           <span>Didn't receive the OTP?</span>
           <NuxtLink
-            to="/auth/login/"
+            v-if="resendTimer === 0"
+            @click="startTimer"
             class="text-primary-600 hover:text-primary-500 font-medium underline-offset-4 transition duration-150 ease-in-out hover:underline"
           >
             Resend OTP
@@ -68,12 +74,25 @@
 </template>
 
 <script setup lang="ts">
-import { Field, useForm } from 'vee-validate'
-import { z } from 'zod'
+import {Field, useForm} from 'vee-validate'
+import {z} from 'zod'
+import {useAuthStore} from "~/store/auth";
+
+
+
+const auth = useAuthStore();
+const activate = auth.activate;
+
+
+const VALIDATION_TEXT = {
+  OTP_ERROR: 'otp code should be a 6 digit number',
+}
 
 // Define your Zod schema and validation logic here
 const zodSchema = z.object({
-  otpCode: z.string().min(6).max(6).regex(/^\d+$/, 'Must be a 6-digit number'),
+  otpCode: z.string().refine(data => /^\d{6}$/.test(data), {
+    message: VALIDATION_TEXT.OTP_ERROR,
+  })
   // Add any additional fields you may need for OTP verification
 });
 
@@ -87,10 +106,28 @@ const {
   // other form options
 });
 
+// Timer logic
+const resendTimer = useState('resendTimer', ()=>0);
+
+const startTimer = () => {
+  // Set the timer duration in seconds (e.g., 60 seconds)
+  resendTimer.value = 60;
+
+  const timerInterval = setInterval(() => {
+    resendTimer.value -= 1;
+
+    if (resendTimer.value <= 0) {
+      clearInterval(timerInterval);
+    }
+  }, 1000);
+};
+
 // Define the onSubmit method
 const onSubmit = handleSubmit(async (values) => {
   // Handle OTP verification logic here
   console.log('OTP form submitted with values:', values);
   // Example: Call an API to verify the OTP, etc.
 });
+
+
 </script>
