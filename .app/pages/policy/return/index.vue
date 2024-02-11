@@ -6,8 +6,8 @@ definePageMeta({
     title: 'Our Return Policy',
     description: 'Learn about our return and refund policies',
     categories: ['return policy', 'refund'],
-    src: '/img/screens/return-policy.png',
-    srcDark: '/img/screens/return-policy-dark.png',
+    src: '/img/screens/auth-login-1-dark.png',
+    srcDark: '/img/screens/auth-login-1-dark.png',
     order: 51, // Adjust the order as needed
   },
 });
@@ -41,7 +41,7 @@ definePageMeta({
 
           <!-- Picture 1 -->
           <div class="my-8">
-            <img src="/img/screens/return-policy.png" alt="Description of Picture 1" class="w-full h-auto" />
+            <img src="/img/screens/auth-login-1-dark.png" alt="Description of Picture 1" class="w-full h-auto" />
           </div>
 
           <!-- Additional Policy Details -->
@@ -56,7 +56,7 @@ definePageMeta({
 
           <!-- Picture 2 -->
           <div class="my-8">
-            <img src="/img/screens/return-policy.png" alt="Description of Picture 2" class="w-full h-auto" />
+            <img src="/img/screens/auth-login-1-dark.png" alt="Description of Picture 2" class="w-full h-auto" />
           </div>
 
           <!-- Additional Policy Details -->
@@ -71,7 +71,7 @@ definePageMeta({
 
           <!-- Picture 3 -->
           <div class="my-8">
-            <img src="/img/screens/return-policy-dark.png" alt="Description of Picture 3" class="w-full h-auto" />
+            <img src="/img/screens/auth-login-1-dark.png" alt="Description of Picture 3" class="w-full h-auto" />
           </div>
 
           <!-- Continue adding more content and pictures as needed -->

@@ -6,8 +6,8 @@ definePageMeta({
     title: 'About Our Company',
     description: 'Learn more about who we are and what we do',
     categories: ['about', 'company'],
-    src: '/img/screens/about-us.png',
-    srcDark: '/img/screens/about-us-dark.png',
+    src: '/img/screens/auth-login-1-dark.png',
+    srcDark: '/img/screens/auth-login-1-dark.png',
     order: 50,
   },
 });
@@ -37,7 +37,7 @@ definePageMeta({
 
           <!-- Picture 1 -->
           <div class="my-8">
-            <img src="/img/screens/about-us.png" alt="Description of Picture 1" class="w-full h-auto" />
+            <img src="/img/screens/auth-login-1-dark.png" alt="Description of Picture 1" class="w-full h-auto" />
           </div>
 
           <p>
@@ -46,7 +46,7 @@ definePageMeta({
 
           <!-- Picture 2 -->
           <div class="my-8">
-            <img src="/img/screens/about-us.png" alt="Description of Picture 2" class="w-full h-auto" />
+            <img src="/img/screens/auth-login-1-dark.png" alt="Description of Picture 2" class="w-full h-auto" />
           </div>
 
           <p>
@@ -55,7 +55,7 @@ definePageMeta({
 
           <!-- Picture 3 -->
           <div class="my-8">
-            <img src="/img/screens/tairo-layout-dark.png" alt="Description of Picture 3" class="w-full h-auto" />
+            <img src="/img/screens/auth-login-1-dark.png" alt="Description of Picture 3" class="w-full h-auto" />
           </div>
 
           <!-- Continue adding more content and pictures as needed -->

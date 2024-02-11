@@ -6,8 +6,8 @@ definePageMeta({
         title: 'Get Help from Our Customer Support Team',
         description: 'Find information and resources to assist you with any questions or issues',
         categories: ['customer support', 'help'],
-        src: '/img/screens/customer-support.png',
-        srcDark: '/img/screens/customer-support-dark.png',
+        src: '/img/screens/auth-login-1-dark.png',
+        srcDark: '/img/screens/auth-login-1-dark.png',
         order: 54, // Adjust the order as needed
     },
 });
@@ -46,7 +46,7 @@ definePageMeta({
 
                     <!-- Picture 1 -->
                     <div class="my-8">
-                        <img src="/img/screens/customer-support.png" alt="Description of Picture 1" class="w-full h-auto" />
+                        <img src="/img/screens/auth-login-1-dark.png" alt="Description of Picture 1" class="w-full h-auto" />
                     </div>
 
                     <!-- Frequently Asked Questions (FAQs) -->
@@ -64,7 +64,7 @@ definePageMeta({
 
                     <!-- Picture 2 -->
                     <div class="my-8">
-                        <img src="/img/screens/customer-support.png" alt="Description of Picture 2" class="w-full h-auto" />
+                        <img src="/img/screens/auth-login-1-dark.png" alt="Description of Picture 2" class="w-full h-auto" />
                     </div>
 
                     <!-- Self-Help Resources -->
@@ -82,7 +82,7 @@ definePageMeta({
 
                     <!-- Picture 3 -->
                     <div class="my-8">
-                        <img src="/img/screens/customer-support-dark.png" alt="Description of Picture 3" class="w-full h-auto" />
+                        <img src="/img/screens/auth-login-1-dark.png" alt="Description of Picture 3" class="w-full h-auto" />
                     </div>
 
                     <!-- Continue adding more content and pictures as needed -->

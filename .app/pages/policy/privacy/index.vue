@@ -6,8 +6,8 @@ definePageMeta({
     title: 'Our Privacy Policy',
     description: 'Learn about how we collect, use, and protect your personal information',
     categories: ['privacy policy'],
-    src: '/img/screens/privacy-policy.png',
-    srcDark: '/img/screens/privacy-policy-dark.png',
+    src: '/img/screens/auth-login-1-dark.png',
+    srcDark: '/img/screens/auth-login-1-dark.png',
     order: 53, // Adjust the order as needed
   },
 });
@@ -41,7 +41,7 @@ definePageMeta({
 
           <!-- Picture 1 -->
           <div class="my-8">
-            <img src="/img/screens/privacy-policy.png" alt="Description of Picture 1" class="w-full h-auto" />
+            <img src="/img/screens/auth-login-1-dark.png" alt="Description of Picture 1" class="w-full h-auto" />
           </div>
 
           <!-- Use of Information -->
@@ -56,7 +56,7 @@ definePageMeta({
 
           <!-- Picture 2 -->
           <div class="my-8">
-            <img src="/img/screens/privacy-policy.png" alt="Description of Picture 2" class="w-full h-auto" />
+            <img src="/img/screens/auth-login-1-dark.png" alt="Description of Picture 2" class="w-full h-auto" />
           </div>
 
           <!-- Data Security -->
@@ -71,7 +71,7 @@ definePageMeta({
 
           <!-- Picture 3 -->
           <div class="my-8">
-            <img src="/img/screens/privacy-policy-dark.png" alt="Description of Picture 3" class="w-full h-auto" />
+            <img src="/img/screens/auth-login-1-dark.png" alt="Description of Picture 3" class="w-full h-auto" />
           </div>
 
           <!-- Continue adding more content and pictures as needed -->
