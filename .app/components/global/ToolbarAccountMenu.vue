@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 
-const LoggedIn = true
+const LoggedIn = false
 </script>
 
 <template >

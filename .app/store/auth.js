@@ -3,7 +3,8 @@ import axios from 'axios';
 import {state} from "vue-tsc/out/shared";
 
 
-const apiUrl = 'http://127.0.0.1:8000';
+
+const apiUrl = `${import.meta.env.VITE_API_URL}`
 
 export const useAuthStore = defineStore('app', {
   state: ()=> ({
@@ -153,7 +154,6 @@ export const useAuthStore = defineStore('app', {
           this.type = payload.type
           this.message = payload.message
 
-
         } else {
           const payload = res.data
           localStorage.removeItem('access');
@@ -164,9 +164,8 @@ export const useAuthStore = defineStore('app', {
           this.user = null
           this.type = payload.type
           this.message = payload.message
-
         }
-        this.$removeAuthLoading();
+        this.loading = false;
       } catch (err) {
         let errorMessage = "Server error"; // Default error message
         let errorType = "failure"; // Default error type
@@ -193,7 +192,7 @@ export const useAuthStore = defineStore('app', {
 
 
 
-    async activate(code, username, phone_number, password){
+    async activate(code, username, phone_number, password, callBackUrl){
       this.loading = true;
       const config = {
           headers: {
@@ -206,8 +205,8 @@ export const useAuthStore = defineStore('app', {
       });
 
       try {
-          const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/verify/`, body, config);
-
+          const res = await axios.post(`${apiUrl}/auth/verify/`, body, config);
+          const router = useRouter();
           if (res.status === 201) {
               const payload = res.data;
               this.isAuthenticated = true
@@ -215,6 +214,9 @@ export const useAuthStore = defineStore('app', {
               this.refresh = localStorage.getItem('refresh');
               this.type = payload.type
               this.message = payload.message
+
+
+              router.push(callBackUrl);
 
           } else {
               const payload = res.data;
@@ -243,6 +245,13 @@ export const useAuthStore = defineStore('app', {
           this.loading = false;
       }
     },
+
+
+
+    async login(phone_number, password){
+      this.loading = true
+    },
+
 
   },
 
