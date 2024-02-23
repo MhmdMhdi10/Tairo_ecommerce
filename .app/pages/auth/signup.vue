@@ -194,13 +194,7 @@ const startTimer =  handleSubmit(async (values) => {
 
 const onSubmit = handleSubmit(async (values) => {
   // here you have access to the validated form values
-
-
-  console.log(message.value, type.value, loading.value)
   await startTimer(values)
-  console.log('auth-success', values, typeof values)
-  console.log(message.value, type.value, loading.value)
-
 
   try {
     // fake delay, this will make isSubmitting value to be true
@@ -220,7 +214,7 @@ const onSubmit = handleSubmit(async (values) => {
     await toaster.show({
       title: "error" || undefined, // Use type.value, and provide a default value if it's null
       message: error.message || '', // Similarly, handle message.value if it's null
-      color: "failure" || undefined, // Use type.value for color if it's a ref
+      color: "danger" || undefined, // Use type.value for color if it's a ref
       icon: 'ph:user-circle-fill',
       closable: true,
     })

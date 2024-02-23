@@ -248,12 +248,120 @@ export const useAuthStore = defineStore('app', {
 
 
 
-    async login(phone_number, password){
-      this.loading = true
+
+    async load_user() {
+      if (localStorage.getItem('access')) {
+        const config = {
+          headers: {
+            'Authorization': `JWT ${localStorage.getItem('access')}`,
+            'Accept': 'application/json'
+          }
+        };
+        try {
+          const res = await axios.get(`${apiUrl}/auth/me/`, config);
+
+          if (res.status === 200) {
+            const payload = res.data
+
+            this.user = payload.user
+            this.type = payload.type
+            this.message = payload.message
+
+          } else {
+            const payload = res.data
+            this.user = null
+            this.type = payload.type
+            this.message = payload.message
+          }
+        } catch (err) {
+          let errorMessage = "Server error"; // Default error message
+          let errorType = "failure"; // Default error type
+
+          if (err.response && err.response.data) {
+            errorMessage = err.response.data.message || errorMessage;
+            errorType = err.response.data.type || errorType;
+          }
+          const payload = { "type": errorType, "message": errorMessage }
+          this.user = null
+          this.type = payload.type
+          this.message = payload.message
+
+        }
+      } else {
+        const payload = { "type": 'failure', "message": "user is not logged in" }
+        this.user = null
+        this.type = payload.type
+        this.message = payload.message
+      }
     },
 
 
+
+
+    async login(phone_number, password, callBackUrl){
+      this.loading = true
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const body = JSON.stringify({
+        phone_number,
+        password
+      });
+
+      try {
+        const router = useRouter();
+        const res = await axios.post(`${apiUrl}/auth/login/`, body, config);
+        if (res.status === 200) {
+          const payload = res.data
+
+          localStorage.setItem('access', payload.access)
+          localStorage.setItem('refresh', payload.refresh)
+          this.isAuthenticated = true
+          this.access = localStorage.getItem('access');
+          this.refresh = localStorage.getItem('refresh');
+          this.type = payload.type
+          this.message = payload.message
+
+          await this.load_user();
+
+          router.push(callBackUrl);
+
+        } else {
+          const payload = res.data
+          localStorage.removeItem('access');
+          localStorage.removeItem('refresh');
+          this.isAuthenticated = false
+          this.access = null
+          this.refresh = null
+          this.user = null
+          this.type = payload.type
+          this.message = payload.message
+          this.loading = false
+        }
+      } catch (err) {
+        let errorMessage = "Server error"; // Default error message
+        let errorType = "failure"; // Default error type
+
+        if (err.response && err.response.data) {
+          errorMessage = err.response.data.message || errorMessage;
+          errorType = err.response.data.type || errorType;
+        }
+        const payload = { "type": errorType, "message": errorMessage }
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
+        this.isAuthenticated = false
+        this.access = null
+        this.refresh = null
+        this.user = null
+        this.type = payload.type
+        this.message = payload.message
+        this.loading = false
+      }
+    }
+
   },
-
-
 });

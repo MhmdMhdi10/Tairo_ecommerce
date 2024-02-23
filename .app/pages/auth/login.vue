@@ -2,10 +2,23 @@
 import { toTypedSchema } from '@vee-validate/zod'
 import { Field, useForm } from 'vee-validate'
 import { z } from 'zod'
+import {useAuthStore} from "~/store/auth";
+import {storeToRefs} from "pinia";
+
+
+
+const auth = useAuthStore();
+
+
+const login = auth.login;
+
+const {loading, type, message} = storeToRefs(auth);
+
 
 definePageMeta({
   layout: 'default',
   title: 'Login',
+  middleware: ['redirect'],
   preview: {
     title: 'Login 3',
     description: 'For authentication and sign in',
@@ -72,38 +85,35 @@ const toaster = useToaster()
 // This is where you would send the form data to the server
 const onSubmit = handleSubmit(async (values) => {
   // here you have access to the validated form values
-  console.log('auth-success', values)
+  const route = useRoute();
+  const callBackUrl = route.query.callBackUrl || '/'
+
+  await login(values.phone_number, values.password, callBackUrl)
 
   try {
     // fake delay, this will make isSubmitting value to be true
-    await new Promise((resolve, reject) => {
-      if (values.password !== 'password') {
-        // simulate a backend error
-        setTimeout(
-            () => reject(new Error('Fake backend validation error')),
-            2000,
-        )
-      }
-      setTimeout(resolve, 4000)
-    })
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
     toaster.clearAll()
     toaster.show({
-      title: 'Success',
-      message: `Welcome back!`,
-      color: 'success',
+      title: type.value || undefined,
+      message: message.value || '',
+      color: type.value || undefined,
       icon: 'ph:user-circle-fill',
       closable: true,
     })
   } catch (error: any) {
-    // this will set the error on the form
-    if (error.message === 'Fake backend validation error') {
-      setFieldError('password', 'Invalid credentials (use "password")')
-    }
+    toaster.clearAll()
+    await toaster.show({
+      title: "error" || undefined, // Use type.value, and provide a default value if it's null
+      message: error.message || '', // Similarly, handle message.value if it's null
+      color: "danger" || undefined, // Use type.value for color if it's a ref
+      icon: 'ph:user-circle-fill',
+      closable: true,
+    })
+
     return
   }
-
-  router.push('/dashboards')
 })
 </script>
 
