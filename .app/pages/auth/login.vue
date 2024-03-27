@@ -12,7 +12,7 @@ const auth = useAuthStore();
 
 const login = auth.login;
 
-const {loading, type, message} = storeToRefs(auth);
+const {loading, type, message, isAuthenticated} = storeToRefs(auth);
 
 
 definePageMeta({
@@ -82,6 +82,20 @@ const {
 const router = useRouter()
 const toaster = useToaster()
 
+
+onMounted(() => {
+  if(isAuthenticated.value){
+    router.push("/")
+  }
+  watch([isAuthenticated], ()=>{
+    console.log(isAuthenticated.value, "lkhlkiiyfvikhb kib")
+    if(isAuthenticated.value){
+      router.push("/")
+    }
+  })
+})
+
+
 // This is where you would send the form data to the server
 const onSubmit = handleSubmit(async (values) => {
   // here you have access to the validated form values
@@ -95,6 +109,9 @@ const onSubmit = handleSubmit(async (values) => {
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
     toaster.clearAll()
+
+    console.log(message.value, type.value)
+    console.log(isAuthenticated.value)
     toaster.show({
       title: type.value || undefined,
       message: message.value || '',

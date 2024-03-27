@@ -106,9 +106,9 @@ const calculateTotalPrice = computed(() => {
         </div>
         <div class="mt-4">
 
-            <BaseButton to="/cart" color="primary" :shape="props.shape" class="!h-12 w-full">
-              Checkout
-            </BaseButton>
+          <BaseButton to="/cart" color="primary" :shape="props.shape" class="!h-12 w-full">
+            Checkout
+          </BaseButton>
 
         </div>
       </div>

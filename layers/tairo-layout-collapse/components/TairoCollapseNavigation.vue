@@ -13,16 +13,33 @@ const startMenuItems = computed(
 const endMenuItems = computed(
   () => menuItems.value?.filter((sidebar) => sidebar.position === 'end'),
 )
+
+const { t } = useI18n({ useScope: 'local' })
+
+const { locale, locales } = useI18n()
 </script>
 
 <template>
+  <!--  <div-->
+  <!--    class="dark:bg-muted-800 border-muted-200 dark:border-muted-700 fixed start-0 top-0 z-[60] flex h-full flex-col border-r bg-white transition-all duration-300"-->
+  <!--    :class="[-->
+  <!--      !isOpen ? 'w-[80px]' : 'w-[280px]',-->
+  <!--      isMobileOpen-->
+  <!--        ? 'translate-x-0 lg:translate-x-0'-->
+  <!--        : 'translate-x-full lg:-translate-x-0',-->
+  <!--    ]"-->
+  <!--  >-->
   <div
     class="dark:bg-muted-800 border-muted-200 dark:border-muted-700 fixed start-0 top-0 z-[60] flex h-full flex-col border-r bg-white transition-all duration-300"
     :class="[
       !isOpen ? 'w-[80px]' : 'w-[280px]',
       isMobileOpen
         ? 'translate-x-0 lg:translate-x-0'
-        : '-translate-x-full lg:translate-x-0',
+        : [
+            locale === 'en'
+              ? '-translate-x-full lg:translate-x-0'
+              : 'translate-x-full lg:-translate-x-0',
+          ],
     ]"
   >
     <!--Header-->

@@ -38,6 +38,7 @@ export default defineNuxtConfig({
      */
     '@pinia/nuxt',
     'nuxt-swiper',
+    '@nuxtjs/i18n',
 
   ],
   css: [
@@ -45,6 +46,7 @@ export default defineNuxtConfig({
     '@fontsource-variable/fira-code/index.css',
     '@fontsource-variable/inter/index.css',
     '@fontsource-variable/karla/index.css',
+    '~/assets/fontiran.css'
   ],
 
   experimental: {
@@ -95,6 +97,19 @@ export default defineNuxtConfig({
     },
     build: {
       target: 'esnext',
+    },
+  },
+  i18n: {
+    strategy: 'no_prefix',
+    locales: [
+      {code: 'fa', iso: 'fa-IR', dir: 'rtl', name: 'فارسی'},
+      {code: 'en', iso: 'en-US', dir: 'ltr', name: 'English'},
+    ],
+    defaultLocale: 'fa',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      redirectOn: 'root',
     },
   },
 })

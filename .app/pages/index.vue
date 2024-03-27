@@ -17,11 +17,13 @@ useHead({
   script: [ { innerHTML: 'console.log(\'Hello world\')' } ]
 })
 
+const {t} = useI18n()
+
 // Here you can define your page logic
 </script>
 
 <template>
   <div>
-    <!-- The page content goes here -->
+    {{ t('Select') }}
   </div>
 </template>

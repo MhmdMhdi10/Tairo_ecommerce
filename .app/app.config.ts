@@ -1,6 +1,9 @@
 export default defineAppConfig({
   tairo: {
     collapse: {
+
+
+
       toolbar: {
         enabled: true,
         showTitle: true,

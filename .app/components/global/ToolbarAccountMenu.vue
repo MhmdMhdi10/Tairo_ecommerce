@@ -1,7 +1,34 @@
 <script setup lang="ts">
-import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
+import { Menu, MenuButton, MenuItems } from '@headlessui/vue'
+import {useAuthStore} from "~/store/auth";
+import {storeToRefs} from "pinia";
 
-const LoggedIn = false
+
+const auth = useAuthStore();
+const {isAuthenticated, user} = storeToRefs(auth);
+const loadUser = auth.load_user;
+
+const LoggedIn = useState("LoggedIn", () => false)
+
+const userInfo = useState('userInfo', () => ({
+  username: '',
+  phone_number: '',
+}));
+
+onMounted(() => {
+  userInfo.value = user.value
+  watch([user], ()=>{
+    userInfo.value = user.value
+  })
+
+  watch([isAuthenticated], ()=>{
+    if(isAuthenticated){
+      LoggedIn.value = true
+    }
+  })
+})
+
+
 </script>
 
 <template >
@@ -51,9 +78,9 @@ const LoggedIn = false
                 <h6
                   class="font-heading text-muted-800 text-sm font-medium dark:text-white"
                 >
-                  Maya Rosselini
+                  {{ userInfo.username }}
                 </h6>
-                <p class="text-muted-400 mb-4 font-sans text-xs">maya@tairo.io</p>
+                <p class="text-muted-400 mb-4 font-sans text-xs">{{ userInfo.phone_number }}</p>
                 <BaseButton
                   to="/profile"
                   shape="curved"

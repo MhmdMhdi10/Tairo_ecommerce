@@ -15,7 +15,7 @@ const signup = auth.signup;
 const activate = auth.activate;
 
 
-const {loading, type, message} = storeToRefs(auth);
+const {loading, type, message, isAuthenticated} = storeToRefs(auth);
 
 
 const accountCreated = useState('accountCreated', ()=> false)
@@ -158,7 +158,13 @@ onMounted(() => {
             accountCreated.value = true;
         }
     });
-
+    watch([isAuthenticated], ()=>{
+      const route = useRoute();
+      const callBackUrl = route.query.callBackUrl || '/'
+      if(isAuthenticated){
+        router.push(callBackUrl)
+      }
+    })
     // watch([accountCreated, loading], () => {
     //     if (accountCreated.value && !loading.value) {
     //         setTimeout(() => {
@@ -235,7 +241,6 @@ const onSubmitVerify = handleSubmit(async (values) => {
     // Call the verifyOTP method from your authentication store
 
     let intCode = parseInt(values.otp_code, 10);
-    console.log(intCode)
     await activate(intCode, values.username, values.phone_number, values.password, callBackUrl);
 
     toaster.clearAll()
@@ -301,7 +306,7 @@ const onSubmitVerify = handleSubmit(async (values) => {
                       label="Username"
                       placeholder="username"
                       :classes="{
-                        input: 'h-12',
+                        input: 'h-12'
                       }"
                       @update:model-value="handleChange"
                       @blur="handleBlur"
@@ -320,7 +325,7 @@ const onSubmitVerify = handleSubmit(async (values) => {
                         placeholder="09*********"
                         autocomplete="tel"
                         :classes="{
-                        input: 'h-12',
+                        input: 'h-12'
                       }"
                         @update:model-value="handleChange"
                         @blur="handleBlur"
@@ -340,7 +345,7 @@ const onSubmitVerify = handleSubmit(async (values) => {
                         placeholder="••••••••••"
                         autocomplete="new-password"
                         :classes="{
-                        input: 'h-12',
+                        input: 'h-12'
                       }"
                         @update:model-value="handleChange"
                         @blur="handleBlur"
@@ -359,7 +364,7 @@ const onSubmitVerify = handleSubmit(async (values) => {
                         label="Confirm Password"
                         placeholder="••••••••••"
                         :classes="{
-                        input: 'h-12',
+                        input: 'h-12'
                       }"
                         @update:model-value="handleChange"
                         @blur="handleBlur"

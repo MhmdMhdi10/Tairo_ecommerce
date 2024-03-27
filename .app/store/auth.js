@@ -86,6 +86,12 @@ export const useAuthStore = defineStore('app', {
         this.$activationSuccess(payload);
     },
 
+    $refreshSuccess(payload){
+      localStorage.setItem('access', payload.access);
+      this.access = localStorage.getItem('access')
+      this.type =  payload.type
+      this.message = payload.message
+    },
 
     $signupSuccess(payload) {  // Signup Logout LoginFail RefreshFail
       localStorage.removeItem('access');
@@ -118,6 +124,65 @@ export const useAuthStore = defineStore('app', {
 
 
 
+
+    async checkAuthenticated(){
+      if (localStorage.getItem('access')) {
+        const config = {
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': `JWT ${localStorage.getItem('access')}`,
+          }
+        };
+
+        try {
+          const res = await axios.get(`${apiUrl}/auth/check_authentication/`, config);
+
+          if (res.status === 200) {
+            const payload = res.data
+            this.isAuthenticated = true
+            this.type = payload.type
+            this.message = payload.message
+            console.log("asdjasdksdkahsbdkabdshad", this.isAuthenticated)
+
+          } else {
+            const payload = res.data
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+            this.isAuthenticated = false
+            this.access = null
+            this.refresh = null
+            this.type = payload.type
+            this.message = payload.message
+          }
+        } catch (err) {
+          let errorMessage = "Server error"; // Default error message
+          let errorType = "failure"; // Default error type
+
+          if (err.response && err.response.data) {
+            errorMessage = err.response.data.message || errorMessage;
+            errorType = err.response.data.type || errorType;
+          }
+          const payload = { "type": errorType, "message": errorMessage }
+          localStorage.removeItem('access');
+          localStorage.removeItem('refresh');
+          this.isAuthenticated = false
+          this.access = null
+          this.refresh = null
+          this.type = payload.type
+          this.message = payload.message
+
+        }
+      } else {
+        const payload = { "type": 'failure', "message": "user is not logged in" }
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
+        this.isAuthenticated = false
+        this.access = null
+        this.refresh = null
+        this.type = payload.type
+        this.message = payload.message
+      }
+    },
 
 
 
@@ -319,13 +384,16 @@ export const useAuthStore = defineStore('app', {
 
           localStorage.setItem('access', payload.access)
           localStorage.setItem('refresh', payload.refresh)
+
+/*          await this.load_user();*/
+
           this.isAuthenticated = true
           this.access = localStorage.getItem('access');
           this.refresh = localStorage.getItem('refresh');
           this.type = payload.type
           this.message = payload.message
 
-          await this.load_user();
+
 
           router.push(callBackUrl);
 
@@ -360,7 +428,284 @@ export const useAuthStore = defineStore('app', {
         this.message = payload.message
         this.loading = false
       }
+    },
+
+
+
+    async recover_link(phone_number){
+      this.loading = true;
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const body = JSON.stringify({
+        phone_number
+      });
+      try {
+        const res = await axios.post(`${apiUrl}/auth/recover_link/`, body, config);
+
+        if (res.status === 200) {
+
+          const payload = res.data
+          this.type = payload.type
+          this.message = payload.message
+
+        } else {
+          const payload = res.data
+          this.type = payload.type
+          this.message = payload.message
+        }
+        this.loading = false;
+      } catch (err) {
+        let errorMessage = "Server error"; // Default error message
+        let errorType = "failure"; // Default error type
+
+        if (err.response && err.response.data) {
+          errorMessage = err.response.data.message || errorMessage;
+          errorType = err.response.data.type || errorType;
+        }
+        const payload = { "type": errorType, "message": errorMessage }
+
+        this.type = payload.type
+        this.message = payload.message
+
+        this.loading = false
+      }
+    },
+
+
+    async recover_link_verify(isTokenValid ,uuid){
+      this.loading = true;
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const body = JSON.stringify({
+        uuid
+      });
+      try {
+        const res = await axios.post(`${apiUrl}/auth/recover_link_verify/`, body, config);
+
+        if (res.status === 200) {
+          const payload = res.data
+          localStorage.setItem("uuid", uuid)
+          this.type = payload.type
+          this.message = payload.message
+          isTokenValid.value = true
+
+
+        } else {
+          const payload = res.data
+          localStorage.removeItem("uuid")
+          this.type = payload.type
+          this.message = payload.message
+        }
+        this.loading = false;
+      } catch (err) {
+        let errorMessage = "Server error"; // Default error message
+        let errorType = "failure"; // Default error type
+
+        if (err.response && err.response.data) {
+          errorMessage = err.response.data.message || errorMessage;
+          errorType = err.response.data.type || errorType;
+        }
+        const payload = { "type": errorType, "message": errorMessage }
+        localStorage.removeItem("uuid")
+        this.type = payload.type
+        this.message = payload.message
+        this.loading = false
+      }
+    },
+
+    async recover_change_password(password, re_password){
+      this.loading = true;
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      };
+
+      const body = JSON.stringify({
+        uuid: localStorage.getItem("uuid"),
+        password,
+        re_password
+      });
+
+      try {
+        const res = await axios.post(`${apiUrl}/auth/recover_change_password/`, body, config);
+
+        if (res.status === 202) {
+
+          const payload = res.data
+          localStorage.removeItem('uuid')
+          this.type = payload.type
+          this.message = payload.message
+
+        } else {
+          const payload = res.data
+          this.type = payload.type
+          this.message = payload.message
+        }
+        this.loading = false;
+      } catch (err) {
+        let errorMessage = "Server error"; // Default error message
+        let errorType = "failure"; // Default error type
+
+        if (err.response && err.response.data) {
+          errorMessage = err.response.data.message || errorMessage;
+          errorType = err.response.data.type || errorType;
+        }
+        const payload = { "type": errorType, "message": errorMessage }
+        this.type = payload.type
+        this.message = payload.message
+
+        this.loading = false
+      }
+    },
+
+
+    async refresher() {
+      if (localStorage.getItem('refresh')) {
+        const config = {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        };
+
+        const body = JSON.stringify({
+          refresh: localStorage.getItem('refresh')
+        });
+
+        try {
+          const res = await axios.post(`${apiUrl}/auth/refresh/`, body, config);
+
+          if (res.status === 200) {
+            const payload = res.data
+            localStorage.setItem('access', payload.access);
+            this.access = localStorage.getItem('access')
+            this.type =  payload.type
+            this.message = payload.message
+          } else {
+            const payload = res.data
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+            this.isAuthenticated = false
+            this.access = null
+            this.refresh = null
+            this.user = null
+            this.type = payload.type
+            this.message = payload.message
+          }
+        } catch (err) {
+          let errorMessage = "Server error"; // Default error message
+          let errorType = "failure"; // Default error type
+
+          if (err.response && err.response.data) {
+            errorMessage = err.response.data.message || errorMessage;
+            errorType = err.response.data.type || errorType;
+          }
+
+          const payload = { "type": errorType, "message": errorMessage }
+          localStorage.removeItem('access');
+          localStorage.removeItem('refresh');
+          this.isAuthenticated = false
+          this.access = null
+          this.refresh = null
+          this.user = null
+          this.type = payload.type
+          this.message = payload.message
+        }
+      } else {
+          const payload = { "type": "failure", "message": "you are not logged in" }
+          localStorage.removeItem('access');
+          localStorage.removeItem('refresh');
+          this.isAuthenticated = false
+          this.access = null
+          this.refresh = null
+          this.user = null
+          this.type = payload.type
+          this.message = payload.message
+      }
+    },
+
+
+
+    async logout(){
+      if (localStorage.getItem('refresh')) {
+        const config = {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        };
+
+        const body = JSON.stringify({
+          refresh: localStorage.getItem('refresh')
+        });
+
+        try {
+          const res = await axios.post(`${apiUrl}/auth/logout/`, body, config);
+
+          if (res.status === 200) {
+            const payload = res.data
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+            this.isAuthenticated = false
+            this.access = null
+            this.refresh = null
+            this.user = null
+            this.type = payload.type
+            this.message = payload.message
+          } else {
+            const payload = res.data
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+            this.isAuthenticated = false
+            this.access = null
+            this.refresh = null
+            this.user = null
+            this.type = payload.type
+            this.message = payload.message
+          }
+        } catch (err) {
+          let errorMessage = "Server error"; // Default error message
+          let errorType = "failure"; // Default error type
+
+          if (err.response && err.response.data) {
+            errorMessage = err.response.data.message || errorMessage;
+            errorType = err.response.data.type || errorType;
+          }
+          const payload = { "type": errorType, "message": errorMessage }
+          localStorage.removeItem('access');
+          localStorage.removeItem('refresh');
+          this.isAuthenticated = false
+          this.access = null
+          this.refresh = null
+          this.user = null
+          this.type = payload.type
+          this.message = payload.message
+        }
+      } else {
+        const payload = {"type": "failure", "message": "you are logged out"}
+        localStorage.removeItem('access');
+        localStorage.removeItem('refresh');
+        this.isAuthenticated = false
+        this.access = null
+        this.refresh = null
+        this.user = null
+        this.type = payload.type
+        this.message = payload.message
+      }
     }
+
 
   },
 });

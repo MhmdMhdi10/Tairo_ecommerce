@@ -1,5 +1,29 @@
 <script setup lang="ts">
-const { close } = usePanels()
+
+import { useLocaleStore } from '~/store/language changer'; // Make sure the path is correct
+
+const localeStore = useLocaleStore();
+
+const currentLocaleCookie =ref( useCookie('i18n_redirected', {
+  watch : true
+}))
+
+const currentLocale = ref(currentLocaleCookie.value)
+
+watch([currentLocaleCookie], ()=> {
+  currentLocale.value = currentLocaleCookie.value
+})
+
+const t = useI18n().t;
+
+const { close } = usePanels();
+
+// Function to switch locale
+const switchLocale = ({newLocale}: { newLocale: any }) => {
+  localeStore.setLocale(newLocale)
+  window.location.reload();
+}
+
 </script>
 
 <template>
@@ -9,15 +33,15 @@ const { close } = usePanels()
     <div class="flex h-16 w-full items-center justify-between px-10">
       <h2
         class="font-heading text-muted-700 text-lg font-semibold dark:text-white"
-      >
-        Select language
+      >{{ t('Select') }}
       </h2>
       <button
         type="button"
         class="text-muted-400 hover:bg-muted-100 hover:text-muted-600 dark:hover:bg-muted-700 flex h-10 w-10 items-center justify-center rounded-full transition-colors duration-300 dark:hover:text-white"
+
         @click="close"
       >
-        <Icon name="feather:chevron-right" class="h-6 w-6" />
+        <Icon :name="currentLocale === 'fa' ? 'feather:chevron-left' : 'feather:chevron-right'" class="h-6 w-6"/>
       </button>
     </div>
 
@@ -26,12 +50,22 @@ const { close } = usePanels()
         <!-- Radio box -->
         <div class="relative my-4 flex items-center justify-center">
           <div class="relative">
-            <input
+            <NuxtLink
               type="radio"
               name="language_selection"
               class="peer absolute start-0 top-0 z-20 h-full w-full cursor-pointer opacity-0"
-              checked
+              key="en"
+              @click="switchLocale({newLocale : 'en'})"
+
             />
+            <div v-if="currentLocale === 'en'"
+                 class="bg-primary-500 dark:border-muted-800 absolute -end-1 -top-1 h-7 w-7 items-center justify-center rounded-full border-4 border-white text-white peer-checked:flex">
+              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                   role="img" class="icon h-5 w-5" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M20 6L9 17l-5-5"></path>
+              </svg>
+            </div>
             <div
               class="border-muted-200 peer-checked:border-primary-500 dark:border-muted-600 flex h-14 w-14 items-center justify-center rounded-full border-2 shadow-lg transition-all duration-300"
             >
@@ -44,144 +78,60 @@ const { close } = usePanels()
             <div
               class="bg-primary-500 dark:border-muted-800 absolute -end-1 -top-1 hidden h-7 w-7 items-center justify-center rounded-full border-4 border-white text-white peer-checked:flex"
             >
-              <Icon name="feather:check" class="h-3 w-3" />
+              <Icon name="feather:check" class="h-3 w-3"/>
             </div>
           </div>
         </div>
         <!-- Radio box -->
         <div class="relative my-4 flex items-center justify-center">
           <div class="relative">
-            <input
+            <NuxtLink
               type="radio"
               name="language_selection"
               class="peer absolute start-0 top-0 z-20 h-full w-full cursor-pointer opacity-0"
+              key="fa"
+              :checked="currentLocale === 'fa'"
+              @click="switchLocale({newLocale : 'fa'})"
+
             />
+            <div v-if="currentLocale === 'fa'"
+                 class="bg-primary-500 dark:border-muted-800 absolute -end-1 -top-1 h-7 w-7 items-center justify-center rounded-full border-4 border-white text-white peer-checked:flex">
+              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
+                   role="img" class="icon h-5 w-5" viewBox="0 0 24 24">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M20 6L9 17l-5-5"></path>
+              </svg>
+            </div>
             <div
               class="border-muted-200 peer-checked:border-primary-500 dark:border-muted-600 flex h-14 w-14 items-center justify-center rounded-full border-2 shadow-lg transition-all duration-300"
             >
               <img
-                class="h-10 w-10 rounded-full"
-                src="/img/icons/flags/france.svg"
+                class="h-12 w-12 rounded-full"
+                src="/img/icons/flags/iran.png"
                 alt="flag icon"
               />
             </div>
             <div
               class="bg-primary-500 dark:border-muted-800 absolute -end-1 -top-1 hidden h-7 w-7 items-center justify-center rounded-full border-4 border-white text-white peer-checked:flex"
             >
-              <Icon name="feather:check" class="h-3 w-3" />
-            </div>
-          </div>
-        </div>
-        <!-- Radio box -->
-        <div class="relative my-4 flex items-center justify-center">
-          <div class="relative">
-            <input
-              type="radio"
-              name="language_selection"
-              class="peer absolute start-0 top-0 z-20 h-full w-full cursor-pointer opacity-0"
-            />
-            <div
-              class="border-muted-200 peer-checked:border-primary-500 dark:border-muted-600 flex h-14 w-14 items-center justify-center rounded-full border-2 shadow-lg transition-all duration-300"
-            >
-              <img
-                class="h-10 w-10 rounded-full"
-                src="/img/icons/flags/spain.svg"
-                alt="flag icon"
-              />
-            </div>
-            <div
-              class="bg-primary-500 dark:border-muted-800 absolute -end-1 -top-1 hidden h-7 w-7 items-center justify-center rounded-full border-4 border-white text-white peer-checked:flex"
-            >
-              <Icon name="feather:check" class="h-3 w-3" />
-            </div>
-          </div>
-        </div>
-        <!-- Radio box -->
-        <div class="relative my-4 flex items-center justify-center">
-          <div class="relative">
-            <input
-              type="radio"
-              name="language_selection"
-              class="peer absolute start-0 top-0 z-20 h-full w-full cursor-pointer opacity-0"
-            />
-            <div
-              class="border-muted-200 peer-checked:border-primary-500 dark:border-muted-600 flex h-14 w-14 items-center justify-center rounded-full border-2 shadow-lg transition-all duration-300"
-            >
-              <img
-                class="h-10 w-10 rounded-full"
-                src="/img/icons/flags/germany.svg"
-                alt="flag icon"
-              />
-            </div>
-            <div
-              class="bg-primary-500 dark:border-muted-800 absolute -end-1 -top-1 hidden h-7 w-7 items-center justify-center rounded-full border-4 border-white text-white peer-checked:flex"
-            >
-              <Icon name="feather:check" class="h-3 w-3" />
-            </div>
-          </div>
-        </div>
-        <!-- Radio box -->
-        <div class="relative my-4 flex items-center justify-center">
-          <div class="relative">
-            <input
-              type="radio"
-              name="language_selection"
-              class="peer absolute start-0 top-0 z-20 h-full w-full cursor-pointer opacity-0"
-            />
-            <div
-              class="border-muted-200 peer-checked:border-primary-500 dark:border-muted-600 flex h-14 w-14 items-center justify-center rounded-full border-2 shadow-lg transition-all duration-300"
-            >
-              <img
-                class="h-10 w-10 rounded-full"
-                src="/img/icons/flags/mexico.svg"
-                alt="flag icon"
-              />
-            </div>
-            <div
-              class="bg-primary-500 dark:border-muted-800 absolute -end-1 -top-1 hidden h-7 w-7 items-center justify-center rounded-full border-4 border-white text-white peer-checked:flex"
-            >
-              <Icon name="feather:check" class="h-3 w-3" />
-            </div>
-          </div>
-        </div>
-        <!-- Radio box -->
-        <div class="relative my-4 flex items-center justify-center">
-          <div class="relative">
-            <input
-              type="radio"
-              name="language_selection"
-              class="peer absolute start-0 top-0 z-20 h-full w-full cursor-pointer opacity-0"
-            />
-            <div
-              class="border-muted-200 peer-checked:border-primary-500 dark:border-muted-600 flex h-14 w-14 items-center justify-center rounded-full border-2 shadow-lg transition-all duration-300"
-            >
-              <img
-                class="h-10 w-10 rounded-full"
-                src="/img/icons/flags/china.svg"
-                alt="flag icon"
-              />
-            </div>
-            <div
-              class="bg-primary-500 dark:border-muted-800 absolute -end-1 -top-1 hidden h-7 w-7 items-center justify-center rounded-full border-4 border-white text-white peer-checked:flex"
-            >
-              <Icon name="feather:check" class="h-3 w-3" />
+              <Icon name="feather:check" class="h-3 w-3"/>
             </div>
           </div>
         </div>
       </div>
 
-      <div>
-        <img
-          src="/img/illustrations/translation.svg"
-          class="mx-auto w-full max-w-[280px] dark:hidden"
-          alt="illustration"
-        />
-        <img
-          src="/img/illustrations/translation-dark.svg"
-          class="mx-auto hidden w-full max-w-[280px] dark:block"
-          alt="illustration"
-        />
-      </div>
+      <!--      <div>-->
+      <!--        <img-->
+      <!--          src="/img/illustrations/translation.svg"-->
+      <!--          class="mx-auto w-full max-w-[280px] dark:hidden"-->
+      <!--          alt="illustration"-->
+      <!--        />-->
+      <!--        <img-->
+      <!--          src="/img/illustrations/translation-dark.svg"-->
+      <!--          class="mx-auto hidden w-full max-w-[280px] dark:block"-->
+      <!--          alt="illustration"-->
+      <!--        />-->
+      <!--      </div>-->
     </div>
   </div>
 </template>

@@ -1,6 +1,25 @@
 <script setup lang="ts">
+
 const route = useRoute()
 const app = useAppConfig()
+
+const locale = ref(useCookie('i18n_redirected', {
+  watch:true,
+}))
+
+watch([locale], ()=> {
+  console.log(locale.value)
+})
+
+
+const htmlDir = ref(locale.value === 'fa' ? 'rtl' : 'ltr')
+const htmlLang = ref(locale.value === 'fa' ? 'fa' : 'eng')
+
+// Watch for changes in the locale stored in cookies
+watch([locale], () => {
+  htmlDir.value = locale.value === 'fa' ? 'rtl' : 'ltr'
+  htmlLang.value = locale.value === 'fa' ? 'fa' : 'eng'
+})
 
 /**
  * Global head configuration
@@ -14,8 +33,8 @@ useHead({
       : `${app.tairo.title}`
   },
   htmlAttrs: {
-    lang: 'eng',
-    dir: 'ltr',
+    lang: [htmlLang],
+    dir: [htmlDir],
   },
   link: [
     {

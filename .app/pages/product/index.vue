@@ -1,4 +1,9 @@
 <script setup lang="ts">
+
+
+
+
+
 definePageMeta({
   title: 'Products',
   preview: {
@@ -12,6 +17,12 @@ definePageMeta({
 })
 
 const { open } = usePanels()
+
+const localPath = useLocalePath();
+const {t} = useI18n({useScope: "local"})
+const {locale, locales} = useI18n()
+
+
 
 const placeholderPrices = {
   original: '49.99',

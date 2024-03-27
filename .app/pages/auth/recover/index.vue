@@ -3,8 +3,26 @@ import { toTypedSchema } from '@vee-validate/zod'
 import { Field, useForm } from 'vee-validate'
 import { z } from 'zod'
 
+
+import {useAuthStore} from "~/store/auth";
+import {storeToRefs} from 'pinia';
+
+
+
+const auth = useAuthStore();
+
+const recover_link = auth.recover_link;
+
+
+
+const {loading, type, message, isAuthenticated} = storeToRefs(auth);
+
+
+const success = useState(() => false)
+
+
 definePageMeta({
-  layout: 'empty',
+  layout: 'default',
   title: 'Recover Password',
   preview: {
     title: 'Recover',
@@ -17,14 +35,28 @@ definePageMeta({
 })
 
 const VALIDATION_TEXT = {
-  EMAIL_REQUIRED: 'A valid email is required',
+  PHONE_NUMBER_REQUIRED: 'A valid phone number is required',
 }
+
+
+const isValidIranianPhoneNumber = (value: string): boolean => {
+  // Allow Iranian phone numbers in the format 09123456789 or +98 9123456789
+  const phoneNumberRegex = /^(\+98|0)?9\d{9}$/;
+
+  return phoneNumberRegex.test(value);
+};
+
 
 // This is the Zod schema for the form input
 // It's used to define the shape that the form data will have
 const zodSchema = z.object({
-  email: z.string().email(VALIDATION_TEXT.EMAIL_REQUIRED),
-})
+  phone_number: z
+    .string()
+    .refine((value) => isValidIranianPhoneNumber(value), {
+      message: VALIDATION_TEXT.PHONE_NUMBER_REQUIRED,
+    }),
+});
+
 
 // Zod has a great infer method that will
 // infer the shape of the schema into a TypeScript type
@@ -32,7 +64,7 @@ type FormInput = z.infer<typeof zodSchema>
 
 const validationSchema = toTypedSchema(zodSchema)
 const initialValues = computed<FormInput>(() => ({
-  email: '',
+  phone_number: '',
 }))
 
 const { handleSubmit, isSubmitting } = useForm({
@@ -40,42 +72,62 @@ const { handleSubmit, isSubmitting } = useForm({
   initialValues,
 })
 
-const success = ref(false)
+const router = useRouter()
+const toaster = useToaster()
+
+
+
+onMounted(() => {
+  watch([type, message], () => {
+    if (type.value === 'success' && message.value === 'Password reset link has been sent to you via SMS') {
+    }
+  });
+  watch([isAuthenticated], ()=>{
+    const route = useRoute();
+    const callBackUrl = route.query.callBackUrl || '/'
+    if(isAuthenticated){
+      router.push(callBackUrl)
+    }
+  })
+});
+
+
 
 // This is where you would send the form data to the server
 const onSubmit = handleSubmit(async (values) => {
-  // here you have access to the validated form values
-  console.log('recover-success', values)
+  await recover_link(values.phone_number)
 
   try {
     // fake delay, this will make isSubmitting value to be true
-    await new Promise((resolve) => setTimeout(resolve, 4000))
-  } catch {
-    // discard errors
-  }
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
-  // always display success message
-  success.value = true
+    success.value = true
+
+    toaster.clearAll()
+    await toaster.show({
+      title: type.value || undefined, // Use type.value, and provide a default value if it's null
+      message: message.value || '', // Similarly, handle message.value if it's null
+      color: type.value || undefined, // Use type.value for color if it's a ref
+      icon: 'ph:user-circle-fill',
+      closable: true,
+    })
+  } catch (error: any) {
+
+    toaster.clearAll()
+    await toaster.show({
+      title: "error" || undefined, // Use type.value, and provide a default value if it's null
+      message: error.message || '', // Similarly, handle message.value if it's null
+      color: "danger" || undefined, // Use type.value for color if it's a ref
+      icon: 'ph:user-circle-fill',
+      closable: true,
+    })
+
+    return
+  }
 })
 </script>
 
 <template>
-  <div
-    class="bg-muted-100 dark:bg-muted-900 relative min-h-screen w-full overflow-hidden px-4"
-  >
-    <div
-      class="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4"
-    >
-      <NuxtLink
-        to="/dashboards"
-        class="text-muted-400 hover:text-primary-500 dark:text-muted-700 dark:hover:text-primary-500 transition-colors duration-300"
-      >
-        <TairoLogo class="h-10 w-10" />
-      </NuxtLink>
-      <div>
-        <BaseThemeToggle />
-      </div>
-    </div>
     <div class="flex w-full items-center justify-center">
       <div class="relative mx-auto w-full max-w-2xl">
         <!--Form-->
@@ -125,18 +177,18 @@ const onSubmit = handleSubmit(async (values) => {
                 <div class="mb-4 space-y-4">
                   <Field
                     v-slot="{ field, errorMessage, handleChange, handleBlur }"
-                    name="email"
+                    name="phone_number"
                   >
                     <BaseInput
                       :model-value="field.value"
                       :error="errorMessage"
                       :disabled="isSubmitting"
-                      type="email"
-                      label="Email address"
-                      placeholder="Email address"
-                      autocomplete="email"
+                      type="tel"
+                      label="Phone Number"
+                      placeholder="Phone Number"
+                      autocomplete="tel"
                       :classes="{
-                        input: 'h-12',
+                        input: 'h-12'
                       }"
                       @update:model-value="handleChange"
                       @blur="handleBlur"
@@ -173,5 +225,4 @@ const onSubmit = handleSubmit(async (values) => {
         </div>
       </div>
     </div>
-  </div>
 </template>
