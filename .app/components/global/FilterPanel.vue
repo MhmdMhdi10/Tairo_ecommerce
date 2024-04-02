@@ -1,4 +1,20 @@
 <script setup lang="ts">
+import { useCategoryStore } from "~/store/category";
+
+const categoryStore = useCategoryStore();
+const getCategories = categoryStore.getCategories;
+
+const { locale } = useI18n();
+
+const initializeData = async () => {
+  await getCategories();
+};
+
+initializeData();
+
+const { type, message, categories: fetchedCategories } = storeToRefs(categoryStore);
+
+
 
 const props = withDefaults(
   defineProps<{
@@ -8,6 +24,7 @@ const props = withDefaults(
     categories: [],
   }
 );
+
 
 const { close } = usePanels();
 
@@ -21,35 +38,12 @@ const selectCategory = (category: string) => {
   }
 };
 
-// Mock data for appearance
-const mockCategories = [
-  {
-    name: 'All',
-    children: ['Electronics', 'Clothing', 'Home & Garden', 'Books', 'Sports'],
-  },
-  {
-    name: 'Electronics',
-    children: ['Phones', 'Laptops', 'Accessories'],
-  },
-  {
-    name: 'Clothing',
-    children: ['Men\'s', 'Women\'s', 'Kids'],
-  },
-  {
-    name: 'Home & Garden',
-    children: ['Furniture', 'Decor', 'Outdoor'],
-  },
-  {
-    name: 'Books',
-    children: ['Fiction', 'Non-Fiction', 'Sci-Fi'],
-  },
-  {
-    name: 'Sports',
-    children: ['Football', 'Basketball', 'Fitness'],
-  },
-];
-
 const isCategorySelected = computed(() => (category: string) => selectedCategories.value.includes(category));
+
+
+
+
+
 
 </script>
 
@@ -68,7 +62,7 @@ const isCategorySelected = computed(() => (category: string) => selectedCategori
 
     <div class="nui-slimscroll relative h-[calc(100%_-_64px)] w-full overflow-y-auto px-10 py-5">
       <!-- Display categories from mock data -->
-      <template v-for="category in mockCategories">
+      <template v-for="category in fetchedCategories">
         <div class="py-4 cursor-pointer">
           <div class="flex items-center justify-between">
             <div class="flex items-center">
@@ -76,17 +70,17 @@ const isCategorySelected = computed(() => (category: string) => selectedCategori
                 type="checkbox"
                 :id="category.name"
                 :checked="isCategorySelected(category.name)"
-                @change="selectCategory(category.name)"
+                @change="selectCategory(category.name); selectChildren(category.name)"
                 class="form-checkbox h-5 w-5 text-primary-500"
               />
-              <label :for="category.name" class="ml-2 font-semibold">{{ category.name }}</label>
+              <label :for="category.name" class="ml-2 font-semibold">{{ category.name[locale] }}</label>
             </div>
           </div>
 
-          <template v-if="category.children && category.children.length > 0">
+          <template v-if="category.sub_categories && category.children.length > 0">
             <div class="ml-6">
               <div
-                v-for="child in category.children"
+                v-for="child in category.sub_categories"
                 :key="child"
                 class="flex items-center mt-2"
               >
@@ -97,7 +91,7 @@ const isCategorySelected = computed(() => (category: string) => selectedCategori
                   @change="selectCategory(child)"
                   class="form-checkbox h-5 w-5 text-primary-500"
                 />
-                <label :for="child" class="ml-2">{{ child }}</label>
+                <label :for="child" class="ml-2">{{ child.name[locale] }}</label>
               </div>
             </div>
           </template>

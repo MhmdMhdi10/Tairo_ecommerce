@@ -1,17 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import {useUtilsStore} from "~/store/utils";
-import {storeToRefs} from "pinia";
-
-const app = useUtilsStore();
-
-const { flag } = storeToRefs(app);
 
 const {locale, locales} = useI18n()
 
 // You should make sure to import usePanels from the correct path
 const { open } = usePanels();
-// console.log(`Image Path: /img/icons/flags/${flag}`);
+
 
 </script>
 
@@ -23,7 +16,7 @@ const { open } = usePanels();
   >
     <!-- Ensure that the image paths are correct -->
     <img
-      v-if="flag"
+      v-if="locale"
       :src="locale === 'en' ? '/img/icons/flags/united-states-of-america.svg' : '/img/icons/flags/iran.png'"
       :class="locale === 'en' ? 'h-7 w-7 rounded-full' : 'h-8 w-8 rounded-full'"
       alt=""

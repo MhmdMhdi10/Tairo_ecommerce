@@ -1,27 +1,14 @@
 <script setup lang="ts">
 
-import { useLocaleStore } from '~/store/language changer'; // Make sure the path is correct
 
-const localeStore = useLocaleStore();
-
-const currentLocaleCookie =ref( useCookie('i18n_redirected', {
-  watch : true
-}))
-
-const currentLocale = ref(currentLocaleCookie.value)
-
-watch([currentLocaleCookie], ()=> {
-  currentLocale.value = currentLocaleCookie.value
-})
-
-const t = useI18n().t;
+const {t, setLocaleCookie, setLocale, locale} = useI18n({ useScope: 'local' });
 
 const { close } = usePanels();
 
 // Function to switch locale
 const switchLocale = ({newLocale}: { newLocale: any }) => {
-  localeStore.setLocale(newLocale)
-  window.location.reload();
+  setLocaleCookie(newLocale)
+  setLocale(newLocale)
 }
 
 </script>
@@ -41,7 +28,7 @@ const switchLocale = ({newLocale}: { newLocale: any }) => {
 
         @click="close"
       >
-        <Icon :name="currentLocale === 'fa' ? 'feather:chevron-left' : 'feather:chevron-right'" class="h-6 w-6"/>
+        <Icon :name="locale === 'fa' ? 'feather:chevron-left' : 'feather:chevron-right'" class="h-6 w-6"/>
       </button>
     </div>
 
@@ -58,7 +45,7 @@ const switchLocale = ({newLocale}: { newLocale: any }) => {
               @click="switchLocale({newLocale : 'en'})"
 
             />
-            <div v-if="currentLocale === 'en'"
+            <div v-if="locale === 'en'"
                  class="bg-primary-500 dark:border-muted-800 absolute -end-1 -top-1 h-7 w-7 items-center justify-center rounded-full border-4 border-white text-white peer-checked:flex">
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
                    role="img" class="icon h-5 w-5" viewBox="0 0 24 24">
@@ -94,7 +81,7 @@ const switchLocale = ({newLocale}: { newLocale: any }) => {
               @click="switchLocale({newLocale : 'fa'})"
 
             />
-            <div v-if="currentLocale === 'fa'"
+            <div v-if="locale === 'fa'"
                  class="bg-primary-500 dark:border-muted-800 absolute -end-1 -top-1 h-7 w-7 items-center justify-center rounded-full border-4 border-white text-white peer-checked:flex">
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"
                    role="img" class="icon h-5 w-5" viewBox="0 0 24 24">
@@ -119,19 +106,6 @@ const switchLocale = ({newLocale}: { newLocale: any }) => {
           </div>
         </div>
       </div>
-
-      <!--      <div>-->
-      <!--        <img-->
-      <!--          src="/img/illustrations/translation.svg"-->
-      <!--          class="mx-auto w-full max-w-[280px] dark:hidden"-->
-      <!--          alt="illustration"-->
-      <!--        />-->
-      <!--        <img-->
-      <!--          src="/img/illustrations/translation-dark.svg"-->
-      <!--          class="mx-auto hidden w-full max-w-[280px] dark:block"-->
-      <!--          alt="illustration"-->
-      <!--        />-->
-      <!--      </div>-->
     </div>
   </div>
 </template>

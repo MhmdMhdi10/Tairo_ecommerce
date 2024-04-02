@@ -2,7 +2,7 @@
 
 
 
-
+import {useProductStore} from "~/store/product";
 
 definePageMeta({
   title: 'Products',
@@ -18,9 +18,17 @@ definePageMeta({
 
 const { open } = usePanels()
 
-const localPath = useLocalePath();
-const {t} = useI18n({useScope: "local"})
-const {locale, locales} = useI18n()
+const productStore = useProductStore()
+
+const initializeData = async () => {
+  await productStore.get_products();
+  await productStore.get_products_by_sold();
+  await productStore.get_products_by_arrival();
+};
+
+initializeData();
+
+const {t, locale, locales} = useI18n({useScope: "local"})
 
 
 
@@ -34,7 +42,7 @@ const router = useRouter()
 const page = computed(() => parseInt((route.query.page as string) ?? '1'))
 
 const filter = ref('')
-const perPage = ref(12)
+const perPage = ref(4)
 
 watch([filter, perPage], () => {
   router.push({
@@ -59,7 +67,8 @@ const { data, pending, error, refresh } = await useFetch(
   },
 )
 
-
+const {products: fetchedProducts, products_arrival, products_sold, search_products,
+  filtered_products, message, type} = storeToRefs(ProductStore)
 
 </script>
 

@@ -2,15 +2,16 @@
 
 const route = useRoute()
 const app = useAppConfig()
+const { setLocaleCookie, setLocale} = useI18n({ useScope: 'local' });
 
 const locale = ref(useCookie('i18n_redirected', {
   watch:true,
 }))
 
-watch([locale], ()=> {
-  console.log(locale.value)
-})
-
+if (locale.value === undefined) {
+  setLocale('fa')
+  setLocaleCookie('fa')
+}
 
 const htmlDir = ref(locale.value === 'fa' ? 'rtl' : 'ltr')
 const htmlLang = ref(locale.value === 'fa' ? 'fa' : 'eng')

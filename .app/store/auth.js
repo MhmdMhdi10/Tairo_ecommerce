@@ -5,7 +5,7 @@ import axios from 'axios';
 
 const apiUrl = `${import.meta.env.VITE_API_URL}`
 
-export const useAuthStore = defineStore('app', {
+export const useAuthStore = defineStore('auth', {
   state: ()=> ({
     access: this.accessToken,
     refresh: this.refreshToken,
@@ -28,103 +28,6 @@ export const useAuthStore = defineStore('app', {
   },
 
   actions: {
-
-    $resetAuthState() {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      this.isAuthenticated.value = false;
-      this.message = null;
-      this.user = null;
-      this.type = null;
-      this.loading = false;
-    },
-    $setAuthLoading() {
-      this.loading = true
-    },
-    $removeAuthLoading() {
-      this.loading = false
-    },
-    $userLoadedSuccess(payload) {
-      this.user = payload.user
-      this.type = payload.type
-      this.message = payload.message
-    },
-    $userLoadedFail(payload) {
-      this.user = null
-      this.type = payload.type
-      this.message = payload.message
-    },
-    $authenticatedSuccess(payload) {
-      this.isAuthenticated = true
-      this.type = payload.type
-      this.message = payload.message
-    },
-    $authenticatedFail(payload) {
-      localStorage.removeItem('access');
-      localStorage.removeItem('refresh');
-      this.isAuthenticated = false
-      this.access = null
-      this.refresh = null
-      this.type = payload.type
-      this.message = payload.message
-    },
-    $LoginSuccess(payload) {
-      this.isAuthenticated = true
-      this.access = localStorage.getItem('access');
-      this.refresh = localStorage.getItem('refresh');
-      this.type = payload.type
-      this.message = payload.message
-    },
-    $activationSuccess(payload) {
-      this.isAuthenticated = true
-      this.access = localStorage.getItem('access');
-      this.refresh = localStorage.getItem('refresh');
-      this.type = payload.type
-      this.message = payload.message
-    },
-    $activationFail(payload) {
-        this.$activationSuccess(payload);
-    },
-
-    $refreshSuccess(payload){
-      localStorage.setItem('access', payload.access);
-      this.access = localStorage.getItem('access')
-      this.type =  payload.type
-      this.message = payload.message
-    },
-
-    $signupSuccess(payload) {  // Signup Logout LoginFail RefreshFail
-      localStorage.removeItem('access');
-      localStorage.removeItem('refresh');
-      this.isAuthenticated = false
-      this.access = null
-      this.refresh = null
-      this.user = null
-      this.type = payload.type
-      this.message = payload.message
-    },
-    $signupFail(payload) {
-        this.$signupSuccess(payload);
-    },
-    $loginFail(payload) {
-        this.$signupSuccess(payload);
-    },
-    $refreshFail(payload) {
-        this.$signupSuccess(payload);
-    },
-    $logoutSuccess(payload) {
-        this.$signupSuccess(payload);
-    },
-    $logoutFail(payload) {
-        this.$signupSuccess(payload);
-    },
-
-
-
-
-
-
-
     async checkAuthenticated(){
       if (localStorage.getItem('access')) {
         const config = {
@@ -183,7 +86,6 @@ export const useAuthStore = defineStore('app', {
         this.message = payload.message
       }
     },
-
 
 
     async signup(username, phone_number, password, re_password) {
@@ -254,8 +156,6 @@ export const useAuthStore = defineStore('app', {
     },
 
 
-
-
     async activate(code, username, phone_number, password, callBackUrl){
       this.loading = true;
       const config = {
@@ -311,8 +211,6 @@ export const useAuthStore = defineStore('app', {
     },
 
 
-
-
     async load_user() {
       if (localStorage.getItem('access')) {
         const config = {
@@ -358,8 +256,6 @@ export const useAuthStore = defineStore('app', {
         this.message = payload.message
       }
     },
-
-
 
 
     async login(phone_number, password, callBackUrl){
@@ -429,7 +325,6 @@ export const useAuthStore = defineStore('app', {
         this.loading = false
       }
     },
-
 
 
     async recover_link(phone_number){
@@ -522,6 +417,7 @@ export const useAuthStore = defineStore('app', {
         this.loading = false
       }
     },
+
 
     async recover_change_password(password, re_password){
       this.loading = true;
@@ -637,7 +533,6 @@ export const useAuthStore = defineStore('app', {
     },
 
 
-
     async logout(){
       if (localStorage.getItem('refresh')) {
         const config = {
@@ -705,7 +600,5 @@ export const useAuthStore = defineStore('app', {
         this.message = payload.message
       }
     }
-
-
   },
 });
