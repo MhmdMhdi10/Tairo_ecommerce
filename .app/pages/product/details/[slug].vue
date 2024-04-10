@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {useProductStore} from "~/store/product";
+
 definePageMeta({
   title: 'Project Details',
   preview: [
@@ -27,27 +29,55 @@ definePageMeta({
   ],
 })
 
+const productStore = useProductStore()
+const getProduct = productStore.get_product;
+
 const { open } = usePanels()
 
 const route = useRoute()
 const slug = computed(() => route.params.slug)
 
-const query = computed(() => {
-  return {
-    slug: slug.value,
-  }
-})
 
-const { data, pending, error, refresh } = await useFetch(
-  '/api/company/projects',
-  {
-    query,
-  },
-)
 
-if (!data.value?.project) {
-  await navigateTo('/layouts/projects')
-}
+const initializeData = async () => {
+  await getProduct(slug.value);
+  // await productStore.get_products_by_sold();
+  // await productStore.get_products_by_arrival();
+};
+
+
+
+// initializeData().then(() => {
+//   productsToShow.value = productsForEachPage();
+//   console.log(productsToShow);
+// });
+
+initializeData();
+
+const {product , message, type, pending} = storeToRefs(productStore)
+const {t, locale} = useI18n({useScope: "local"})
+
+
+console.log(slug.value)
+
+
+
+// const query = computed(() => {
+//   return {
+//     slug: slug.value,
+//   }
+// })
+//
+// const { data, pending, error, refresh } = await useFetch(
+//   '/api/company/projects',
+//   {
+//     query,
+//   },
+// )
+
+// if (!data.value?.project) {
+//   await navigateTo('/layouts/projects')
+// }
 
 const currentTask = ref()
 
@@ -104,7 +134,7 @@ function openTaskPanel(id: number, tasks: any) {
         </BaseDropdownItem>
       </BaseDropdown>
     </div>
-    <div v-if="data?.project === undefined">
+    <div v-if="(product === undefined) || (product === null)">
       <BasePlaceholderPage
         title="Project not found"
         subtitle="We couldn't find a project matching this namespace."
@@ -152,33 +182,63 @@ function openTaskPanel(id: number, tasks: any) {
                   >
                     <div>
                       <BaseHeading tag="h2" size="2xl" weight="medium">
-                        {{ data?.project.name }}
+                        {{ product?.name[locale] }}
                       </BaseHeading>
                       <BaseParagraph
                         size="lg"
                         class="text-muted-600 dark:text-muted-400"
                       >
-                        {{ data?.project.category }}
+                        {{ product?.category.name[locale] }}
                       </BaseParagraph>
                       <BaseParagraph size="sm" class="text-muted-400 py-4">
-                        {{ data?.project.description }}
+                        {{ product?.description[locale] }}
                       </BaseParagraph>
+                      <div v-if="product?.price > 0" class="flex">
+                        <div>
+                          <BaseParagraph size="xl" v-if="(product.discount_value !== 0) && (product.discount_value !== null)" class="text-muted-400 line-through">{{ product.price }}</BaseParagraph>
+                          <BaseParagraph size="xl" v-else class="dark:text-primary-600 text-primary-400">{{ product.price }}</BaseParagraph>
+                          <BaseParagraph size="xl" v-if="(((product.discount_value !== 0) && (product.discount_value !== null)) && product.discount_type === 'price') " class="dark:text-primary-600 text-primary-400">{{ (product.price - product.discount_value)  }}</BaseParagraph>
+                          <BaseParagraph size="xl" v-if="(((product.discount_value !== 0) && (product.discount_value !== null)) && product.discount_type === 'percentage') " class="dark:text-primary-600 text-primary-400">{{ (product.price * (100 - product.discount_value) / 100)  }}</BaseParagraph>
+                        </div>
+                        <div>
+                          <BaseParagraph size="sm" class="text-muted-600 dark:text-muted-400 pt-1.5 line-through "> {{t('Tooman')}} </BaseParagraph>
+                          <BaseParagraph size="sm" class="dark:text-primary-600 text-primary-400 pt-1.5 "> {{t('Tooman')}} </BaseParagraph>
+                        </div>
+                      </div>
+                      <div v-else>
+                        <BaseParagraph
+                          size="md"
+                          class=" dark:text-primary-600 text-primary-400"
+                        >
+                          {{ t("NoPrice") }}
+                        </BaseParagraph>
 
-                      <BaseParagraph
-                              size="xl"
-                              class=" dark:text-primary-600 text-primary-400"
-                      >
-                          Price: 200$
-                      </BaseParagraph>
+                        <div class="grid grid-cols-6">
+                          <div class="col-span-3 gap-2">
+                            <BaseSelect
+                              :label="t('countingUnit')"
+                              :classes="{
+                            wrapper: 'w-full sm:w-40',
+                          }"
+                            >
+                              <option >{{product?.counting_unit[locale]}}</option>
+                              <option v-if="product?.counting_unit_2" :value="25">{{ product?.counting_unit_2[locale]}}</option>
+                              <option v-if="product?.counting_unit_3" :value="50">{{product?.counting_unit[locale]}}</option>
 
+                            </BaseSelect>
+                          </div>
+                          <div class="col-span-2"></div>
+                        </div>
+                      </div>
                     </div>
+
                     <div class="w-full shrink-0 sm:w-72">
                       <img
-                        :src="data?.project.image"
-                        :alt="data?.project.name"
+                        :src="product?.photo"
                         class="rounded-lg"
                       />
                     </div>
+
                   </div>
 
                     <!-- SECOND PART -->
@@ -195,30 +255,25 @@ function openTaskPanel(id: number, tasks: any) {
                     <h4
                       class="text-muted-400 mb-6 font-sans text-xs font-semibold uppercase"
                     >
-                      Recent files
+                      {{t("RecentFilesAndPricingLists")}}
                     </h4>
                     <div class="grid gap-8 pb-6 sm:grid-cols-2">
-                      <div
-                        v-for="(file, index) in data?.project.files"
-                        :key="index"
-                        shape="curved"
-                      >
                         <div class="flex w-full items-center gap-2">
                           <img
-                            :src="file.icon"
-                            :alt="file.name"
+                            :src="product?.brand.picture"
+                            :alt="product?.brand.name[locale]"
                             class="max-w-[46px]"
                           />
                           <div>
                             <BaseHeading tag="h3" size="sm" weight="medium">
-                              {{ file.name }}
+                              {{ product.brand.name[locale] }}
                             </BaseHeading>
                             <BaseParagraph size="xs" class="text-muted-400">
-                              <span>{{ file.size }}</span>
+                              <span>{{ product.brand.country[locale] }}</span>
                               <span class="px-1 text-base leading-tight">
                                 &middot;
                               </span>
-                              <span>v{{ file.version }}</span>
+                              <span>{{ product.brand.updated_at }}</span>
                             </BaseParagraph>
                           </div>
                           <div class="ms-auto">
@@ -231,7 +286,35 @@ function openTaskPanel(id: number, tasks: any) {
                             </BaseButtonIcon>
                           </div>
                         </div>
-                      </div>
+
+                        <div v-if="product.brand.file_2" class="flex w-full items-center gap-2">
+                          <img
+                            :src="product?.brand.picture"
+                            :alt="product?.brand.name[locale]"
+                            class="max-w-[46px]"
+                          />
+                          <div>
+                            <BaseHeading tag="h3" size="sm" weight="medium">
+                              {{ product.brand.name[locale] }}
+                            </BaseHeading>
+                            <BaseParagraph size="xs" class="text-muted-400">
+                              <span>{{ product.brand.country[locale] }}</span>
+                              <span class="px-1 text-base leading-tight">
+                                &middot;
+                              </span>
+                              <span>{{ product.brand.updated_at }}</span>
+                            </BaseParagraph>
+                          </div>
+                          <div class="ms-auto">
+                            <BaseButtonIcon
+                              shape="full"
+                              data-nui-tooltip="Download file"
+                              size="sm"
+                            >
+                              <Icon name="lucide:arrow-down" />
+                            </BaseButtonIcon>
+                          </div>
+                        </div>
                     </div>
                   </div>
                 </BaseCard>
@@ -247,12 +330,12 @@ function openTaskPanel(id: number, tasks: any) {
                     </h4>
 
                     <div class="mb-4 flex items-center gap-2">
-                      <BaseAvatar
-                        :src="data?.project.customer.logo"
-                        size="md"
-                        :data-nui-tooltip="data?.project.customer.name"
-                        class="bg-muted-100 dark:bg-muted-700"
-                      />
+<!--                      <BaseAvatar-->
+<!--                        :src="data?.project.customer.logo"-->
+<!--                        size="md"-->
+<!--                        :data-nui-tooltip="data?.project.customer.name"-->
+<!--                        class="bg-muted-100 dark:bg-muted-700"-->
+<!--                      />-->
                       <div>
                         <BaseHeading
                           tag="h5"
@@ -261,10 +344,10 @@ function openTaskPanel(id: number, tasks: any) {
                           lead="none"
                           class="line-clamp-1"
                         >
-                          {{ data?.project.customer.name }}
+<!--                          {{ data?.project.customer.name }}-->
                         </BaseHeading>
                         <BaseParagraph size="sm" class="text-muted-400">
-                          {{ data?.project.customer.text }}
+<!--                          {{ data?.project.customer.text }}-->
                         </BaseParagraph>
                       </div>
                     </div>
@@ -277,15 +360,15 @@ function openTaskPanel(id: number, tasks: any) {
                         </h4>
                         <div>
                           <span class="text-muted-400 font-sans text-sm">
-                            {{ data?.project.completed }}%
+<!--                            {{ data?.project.completed }}%-->
                           </span>
                         </div>
                       </div>
-                      <BaseProgress
-                        size="xs"
-                        color="primary"
-                        :value="data?.project.completed"
-                      />
+<!--                      <BaseProgress-->
+<!--                        size="xs"-->
+<!--                        color="primary"-->
+<!--                        :value="data?.project.completed"-->
+<!--                      />-->
                     </div>
                   </BaseCard>
                   <!-- Tools -->
@@ -295,34 +378,34 @@ function openTaskPanel(id: number, tasks: any) {
                     >
                       Project Tools
                     </h4>
-                    <div class="space-y-8">
-                      <div
-                        v-for="tool in data?.project.tools"
-                        :key="tool.name"
-                        class="flex items-center gap-2"
-                      >
-                        <BaseAvatar
-                          :src="tool.icon"
-                          size="xs"
-                          :data-nui-tooltip="tool.name"
-                          class="bg-muted-100 dark:bg-muted-700"
-                        />
-                        <div>
-                          <BaseHeading
-                            tag="h5"
-                            size="sm"
-                            weight="medium"
-                            lead="none"
-                            class="line-clamp-1"
-                          >
-                            {{ tool.name }}
-                          </BaseHeading>
-                          <BaseParagraph size="xs" class="text-muted-400">
-                            {{ tool.description }}
-                          </BaseParagraph>
-                        </div>
-                      </div>
-                    </div>
+<!--                    <div class="space-y-8">-->
+<!--                      <div-->
+<!--                        v-for="tool in data?.project.tools"-->
+<!--                        :key="tool.name"-->
+<!--                        class="flex items-center gap-2"-->
+<!--                      >-->
+<!--                        <BaseAvatar-->
+<!--                          :src="tool.icon"-->
+<!--                          size="xs"-->
+<!--                          :data-nui-tooltip="tool.name"-->
+<!--                          class="bg-muted-100 dark:bg-muted-700"-->
+<!--                        />-->
+<!--                        <div>-->
+<!--                          <BaseHeading-->
+<!--                            tag="h5"-->
+<!--                            size="sm"-->
+<!--                            weight="medium"-->
+<!--                            lead="none"-->
+<!--                            class="line-clamp-1"-->
+<!--                          >-->
+<!--                            {{ tool.name }}-->
+<!--                          </BaseHeading>-->
+<!--                          <BaseParagraph size="xs" class="text-muted-400">-->
+<!--                            {{ tool.description }}-->
+<!--                          </BaseParagraph>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
                   </BaseCard>
                   <!-- Stacks -->
                   <BaseCard class="p-8">
@@ -331,243 +414,243 @@ function openTaskPanel(id: number, tasks: any) {
                     >
                       Project Stacks
                     </h4>
-                    <div class="space-y-8">
-                      <div
-                        v-for="stack in data?.project.stacks"
-                        :key="stack.name"
-                        class="flex items-center gap-2"
-                      >
-                        <BaseAvatar
-                          :src="stack.icon"
-                          size="xs"
-                          :data-nui-tooltip="stack.name"
-                          class="bg-muted-100 dark:bg-muted-700"
-                        />
-                        <div>
-                          <BaseHeading
-                            tag="h5"
-                            size="sm"
-                            weight="medium"
-                            lead="none"
-                            class="line-clamp-1"
-                          >
-                            {{ stack.name }}
-                          </BaseHeading>
-                          <BaseParagraph size="xs" class="text-muted-400">
-                            {{ stack.description }}
-                          </BaseParagraph>
-                        </div>
-                      </div>
-                    </div>
+<!--                    <div class="space-y-8">-->
+<!--                      <div-->
+<!--                        v-for="stack in data?.project.stacks"-->
+<!--                        :key="stack.name"-->
+<!--                        class="flex items-center gap-2"-->
+<!--                      >-->
+<!--                        <BaseAvatar-->
+<!--                          :src="stack.icon"-->
+<!--                          size="xs"-->
+<!--                          :data-nui-tooltip="stack.name"-->
+<!--                          class="bg-muted-100 dark:bg-muted-700"-->
+<!--                        />-->
+<!--                        <div>-->
+<!--                          <BaseHeading-->
+<!--                            tag="h5"-->
+<!--                            size="sm"-->
+<!--                            weight="medium"-->
+<!--                            lead="none"-->
+<!--                            class="line-clamp-1"-->
+<!--                          >-->
+<!--                            {{ stack.name }}-->
+<!--                          </BaseHeading>-->
+<!--                          <BaseParagraph size="xs" class="text-muted-400">-->
+<!--                            {{ stack.description }}-->
+<!--                          </BaseParagraph>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
                   </BaseCard>
                 </div>
               </div>
             </div>
           </div>
           <!-- Team -->
-          <div v-else-if="activeValue === 'Questions'">
-            <div class="grid gap-6 sm:grid-cols-3">
-                <BaseCard
-                        elevated-hover
-                        class="hover:!border-primary-500 relative"
-                >
-                    <NuxtLink to="#">
+<!--          <div v-else-if="activeValue === 'Questions'">-->
+<!--            <div class="grid gap-6 sm:grid-cols-3">-->
+<!--                <BaseCard-->
+<!--                        elevated-hover-->
+<!--                        class="hover:!border-primary-500 relative"-->
+<!--                >-->
+<!--                    <NuxtLink to="#">-->
 
-                        <div class="flex flex-col items-center p-5 sm:flex-row">
-                            <div class="flex flex-col gap-3 sm:flex-row">
-                                <div class="text-center leading-none sm:text-left">
-                                    <h1
-                                            class="text-muted-800 dark:text-muted-100 font-sans text-base font-medium mb-4 "
-                                    >
-                                        {{ data?.project.owner.name }}
-                                    </h1>
+<!--                        <div class="flex flex-col items-center p-5 sm:flex-row">-->
+<!--                            <div class="flex flex-col gap-3 sm:flex-row">-->
+<!--                                <div class="text-center leading-none sm:text-left">-->
+<!--                                    <h1-->
+<!--                                            class="text-muted-800 dark:text-muted-100 font-sans text-base font-medium mb-4 "-->
+<!--                                    >-->
+<!--                                        {{ data?.project.owner.name }}-->
+<!--                                    </h1>-->
 
-                                    <!--Question-->
-                                    <div
-                                            class="border-muted-200 dark:border-muted-700  border-b pb-4"
-                                    >
-                                        <p
-                                                class="text-muted-500 dark:text-muted-400 font-sans text-md leading-5"
-                                        >
-                                            <span class="text-white"> Question: </span>  {{ data?.project.owner.bio }}
-                                            {{ data?.project.owner.bio }}
-                                            {{ data?.project.owner.bio }}
-                                            {{ data?.project.owner.bio }}
+<!--                                    &lt;!&ndash;Question&ndash;&gt;-->
+<!--                                    <div-->
+<!--                                            class="border-muted-200 dark:border-muted-700  border-b pb-4"-->
+<!--                                    >-->
+<!--                                        <p-->
+<!--                                                class="text-muted-500 dark:text-muted-400 font-sans text-md leading-5"-->
+<!--                                        >-->
+<!--                                            <span class="text-white"> Question: </span>  {{ data?.project.owner.bio }}-->
+<!--                                            {{ data?.project.owner.bio }}-->
+<!--                                            {{ data?.project.owner.bio }}-->
+<!--                                            {{ data?.project.owner.bio }}-->
 
-                                        </p>
-                                    </div>
-                                    <!--Answer-->
-                                    <div
-                                            class="border-muted-200 dark:border-muted-700 pt-4"
-                                    >
-                                        <p
-                                                class="text-muted-500 dark:text-muted-400 font-sans text-md leading-5"
-                                        >
-                                            <span class="text-white"> Answer: </span>  {{ data?.project.owner.bio }}
-                                        </p>
-                                    </div>
+<!--                                        </p>-->
+<!--                                    </div>-->
+<!--                                    &lt;!&ndash;Answer&ndash;&gt;-->
+<!--                                    <div-->
+<!--                                            class="border-muted-200 dark:border-muted-700 pt-4"-->
+<!--                                    >-->
+<!--                                        <p-->
+<!--                                                class="text-muted-500 dark:text-muted-400 font-sans text-md leading-5"-->
+<!--                                        >-->
+<!--                                            <span class="text-white"> Answer: </span>  {{ data?.project.owner.bio }}-->
+<!--                                        </p>-->
+<!--                                    </div>-->
 
-                                </div>
-                            </div>
-                        </div>
-                    </NuxtLink>
-                </BaseCard>
-                <BaseCard
-                  elevated-hover
-                  class="hover:!border-primary-500 relative"
-                >
-                  <NuxtLink to="#">
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </NuxtLink>-->
+<!--                </BaseCard>-->
+<!--                <BaseCard-->
+<!--                  elevated-hover-->
+<!--                  class="hover:!border-primary-500 relative"-->
+<!--                >-->
+<!--                  <NuxtLink to="#">-->
 
-                      <div class="flex flex-col items-center p-5 sm:flex-row">
-                          <div class="flex flex-col gap-3 sm:flex-row">
-                              <div class="text-center leading-none sm:text-left">
-                                  <h1
-                                          class="text-muted-800 dark:text-muted-100 font-sans text-base font-medium mb-4 "
-                                  >
-                                      {{ data?.project.owner.name }}
-                                  </h1>
+<!--                      <div class="flex flex-col items-center p-5 sm:flex-row">-->
+<!--                          <div class="flex flex-col gap-3 sm:flex-row">-->
+<!--                              <div class="text-center leading-none sm:text-left">-->
+<!--                                  <h1-->
+<!--                                          class="text-muted-800 dark:text-muted-100 font-sans text-base font-medium mb-4 "-->
+<!--                                  >-->
+<!--                                      {{ data?.project.owner.name }}-->
+<!--                                  </h1>-->
 
-                                  <!--Question-->
-                                  <div
-                                          class="border-muted-200 dark:border-muted-700  border-b pb-4"
-                                  >
-                                      <p
-                                              class="text-muted-500 dark:text-muted-400 font-sans text-md leading-5"
-                                      >
-                                          <span class="text-white"> Question: </span>  {{ data?.project.owner.bio }}
-                                      </p>
-                                  </div>
-                                  <!--Answer-->
-                                  <div
-                                          class="border-muted-200 dark:border-muted-700 pt-4"
-                                  >
-                                      <p
-                                              class="text-muted-500 dark:text-muted-400 font-sans text-md leading-5"
-                                      >
-                                          <span class="text-white"> Answer: </span>  {{ data?.project.owner.bio }}
-                                      </p>
-                                  </div>
+<!--                                  &lt;!&ndash;Question&ndash;&gt;-->
+<!--                                  <div-->
+<!--                                          class="border-muted-200 dark:border-muted-700  border-b pb-4"-->
+<!--                                  >-->
+<!--                                      <p-->
+<!--                                              class="text-muted-500 dark:text-muted-400 font-sans text-md leading-5"-->
+<!--                                      >-->
+<!--                                          <span class="text-white"> Question: </span>  {{ data?.project.owner.bio }}-->
+<!--                                      </p>-->
+<!--                                  </div>-->
+<!--                                  &lt;!&ndash;Answer&ndash;&gt;-->
+<!--                                  <div-->
+<!--                                          class="border-muted-200 dark:border-muted-700 pt-4"-->
+<!--                                  >-->
+<!--                                      <p-->
+<!--                                              class="text-muted-500 dark:text-muted-400 font-sans text-md leading-5"-->
+<!--                                      >-->
+<!--                                          <span class="text-white"> Answer: </span>  {{ data?.project.owner.bio }}-->
+<!--                                      </p>-->
+<!--                                  </div>-->
 
-                              </div>
-                          </div>
-                      </div>
-                  </NuxtLink>
-                </BaseCard>
-              <!-- Invite -->
-              <div>
-                <button
-                  type="button"
-                  class="border-muted-300 dark:border-muted-800 hover:border-primary-500 dark:hover:border-primary-500 group flex h-full w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 transition-colors duration-300"
-                >
-                  <span class="block text-center font-sans">
-                    <span
-                      class="text-muted-800 dark:text-muted-100 group-hover:text-primary-500 dark:group-hover:text-primary-500 block transition-colors duration-300"
-                    >
-                      Ask Your Question
-                    </span>
-                    <span class="text-muted-400 block text-sm">
-                      Ask any Question regarding the product
-                    </span>
-                  </span>
-                </button>
-              </div>
-            </div>
-          </div>
+<!--                              </div>-->
+<!--                          </div>-->
+<!--                      </div>-->
+<!--                  </NuxtLink>-->
+<!--                </BaseCard>-->
+<!--              &lt;!&ndash; Invite &ndash;&gt;-->
+<!--              <div>-->
+<!--                <button-->
+<!--                  type="button"-->
+<!--                  class="border-muted-300 dark:border-muted-800 hover:border-primary-500 dark:hover:border-primary-500 group flex h-full w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 transition-colors duration-300"-->
+<!--                >-->
+<!--                  <span class="block text-center font-sans">-->
+<!--                    <span-->
+<!--                      class="text-muted-800 dark:text-muted-100 group-hover:text-primary-500 dark:group-hover:text-primary-500 block transition-colors duration-300"-->
+<!--                    >-->
+<!--                      Ask Your Question-->
+<!--                    </span>-->
+<!--                    <span class="text-muted-400 block text-sm">-->
+<!--                      Ask any Question regarding the product-->
+<!--                    </span>-->
+<!--                  </span>-->
+<!--                </button>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
           <!-- Tasks -->
-          <div v-else-if="activeValue === 'Review'">
-            <div class="grid gap-6 sm:grid-cols-3">
-              <BaseCard
-                v-for="item in data?.project.tasks"
-                :key="item.id"
-                elevated-hover
-                class="hover:!border-primary-500 flex cursor-pointer flex-col"
-                @click="openTaskPanel(item.id, data?.project.tasks)"
-              >
-                <div class="flex flex-col items-center p-5 sm:flex-row">
-                  <div class="flex flex-col gap-3 sm:flex-row">
-                    <Icon
-                      v-if="item.status === 0"
-                      name="ph:plus-circle-duotone"
-                      class="text-muted-400 h-6 w-6 shrink-0"
-                    />
-                    <Icon
-                      v-else-if="item.status === 5"
-                      name="ph:check-circle-duotone"
-                      class="text-success-500 h-6 w-6 shrink-0"
-                    />
-                    <Icon
-                      v-else-if="item.status === 1"
-                      name="ph:timer-duotone"
-                      class="text-muted-400 h-6 w-6 shrink-0"
-                    />
-                    <Icon
-                      v-else-if="item.status === 2 || item.status === 3"
-                      name="ph:warning-duotone"
-                      class="text-warning-500 h-6 w-6 shrink-0"
-                    />
-                    <div class="text-center leading-none sm:text-left">
-                      <h4
-                        class="text-muted-800 dark:text-muted-100 mb-2 font-sans text-base font-medium leading-tight"
-                      >
-                        {{ item.name }}
-                      </h4>
-                      <p class="text-muted-400 line-clamp-2 font-sans text-xs">
-                        {{ item.description }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="bg-muted-50 dark:bg-muted-700/50 mt-auto flex items-center justify-between rounded-b-lg px-5 py-3"
-                >
-                  <div class="flex max-w-[180px] grow items-center gap-2">
-                    <BaseAvatar
-                      size="xxs"
-                      :src="item.assignee.src"
-                      :data-nui-tooltip="item.assignee.tooltip"
-                    />
-                    <BaseProgress
-                      :value="item.completion"
-                      size="xs"
-                      :color="item.status === 5 ? 'success' : 'primary'"
-                    />
-                  </div>
-                  <div class="text-muted-400 flex items-center gap-4">
-                    <div class="flex items-center gap-1 text-sm">
-                      <Icon name="ph:paperclip-duotone" class="h-4 w-4" />
-                      <span class="font-sans">
-                        {{ item.files.length }}
-                      </span>
-                    </div>
-                    <div class="flex items-center gap-1 text-sm">
-                      <Icon name="ph:chat-circle-duotone" class="h-4 w-4" />
-                      <span class="font-sans">
-                        {{ item.comments.length }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </BaseCard>
-              <!-- Invite -->
-              <div>
-                <button
-                  type="button"
-                  class="border-muted-300 dark:border-muted-800 hover:border-primary-500 dark:hover:border-primary-500 group flex h-full w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 transition-colors duration-300"
-                >
-                  <span class="block text-center font-sans">
-                    <span
-                      class="text-muted-800 dark:text-muted-100 group-hover:text-primary-500 dark:group-hover:text-primary-500 block transition-colors duration-300"
-                    >
-                      Create a new task
-                    </span>
-                    <span class="text-muted-400 block text-sm">
-                      Add a new task to your project
-                    </span>
-                  </span>
-                </button>
-              </div>
-            </div>
-          </div>
+<!--          <div v-else-if="activeValue === 'Review'">-->
+<!--            <div class="grid gap-6 sm:grid-cols-3">-->
+<!--              <BaseCard-->
+<!--                v-for="item in data?.project.tasks"-->
+<!--                :key="item.id"-->
+<!--                elevated-hover-->
+<!--                class="hover:!border-primary-500 flex cursor-pointer flex-col"-->
+<!--                @click="openTaskPanel(item.id, data?.project.tasks)"-->
+<!--              >-->
+<!--                <div class="flex flex-col items-center p-5 sm:flex-row">-->
+<!--                  <div class="flex flex-col gap-3 sm:flex-row">-->
+<!--                    <Icon-->
+<!--                      v-if="item.status === 0"-->
+<!--                      name="ph:plus-circle-duotone"-->
+<!--                      class="text-muted-400 h-6 w-6 shrink-0"-->
+<!--                    />-->
+<!--                    <Icon-->
+<!--                      v-else-if="item.status === 5"-->
+<!--                      name="ph:check-circle-duotone"-->
+<!--                      class="text-success-500 h-6 w-6 shrink-0"-->
+<!--                    />-->
+<!--                    <Icon-->
+<!--                      v-else-if="item.status === 1"-->
+<!--                      name="ph:timer-duotone"-->
+<!--                      class="text-muted-400 h-6 w-6 shrink-0"-->
+<!--                    />-->
+<!--                    <Icon-->
+<!--                      v-else-if="item.status === 2 || item.status === 3"-->
+<!--                      name="ph:warning-duotone"-->
+<!--                      class="text-warning-500 h-6 w-6 shrink-0"-->
+<!--                    />-->
+<!--                    <div class="text-center leading-none sm:text-left">-->
+<!--                      <h4-->
+<!--                        class="text-muted-800 dark:text-muted-100 mb-2 font-sans text-base font-medium leading-tight"-->
+<!--                      >-->
+<!--                        {{ item.name }}-->
+<!--                      </h4>-->
+<!--                      <p class="text-muted-400 line-clamp-2 font-sans text-xs">-->
+<!--                        {{ item.description }}-->
+<!--                      </p>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                <div-->
+<!--                  class="bg-muted-50 dark:bg-muted-700/50 mt-auto flex items-center justify-between rounded-b-lg px-5 py-3"-->
+<!--                >-->
+<!--                  <div class="flex max-w-[180px] grow items-center gap-2">-->
+<!--                    <BaseAvatar-->
+<!--                      size="xxs"-->
+<!--                      :src="item.assignee.src"-->
+<!--                      :data-nui-tooltip="item.assignee.tooltip"-->
+<!--                    />-->
+<!--                    <BaseProgress-->
+<!--                      :value="item.completion"-->
+<!--                      size="xs"-->
+<!--                      :color="item.status === 5 ? 'success' : 'primary'"-->
+<!--                    />-->
+<!--                  </div>-->
+<!--                  <div class="text-muted-400 flex items-center gap-4">-->
+<!--                    <div class="flex items-center gap-1 text-sm">-->
+<!--                      <Icon name="ph:paperclip-duotone" class="h-4 w-4" />-->
+<!--                      <span class="font-sans">-->
+<!--                        {{ item.files.length }}-->
+<!--                      </span>-->
+<!--                    </div>-->
+<!--                    <div class="flex items-center gap-1 text-sm">-->
+<!--                      <Icon name="ph:chat-circle-duotone" class="h-4 w-4" />-->
+<!--                      <span class="font-sans">-->
+<!--                        {{ item.comments.length }}-->
+<!--                      </span>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--              </BaseCard>-->
+<!--              &lt;!&ndash; Invite &ndash;&gt;-->
+<!--              <div>-->
+<!--                <button-->
+<!--                  type="button"-->
+<!--                  class="border-muted-300 dark:border-muted-800 hover:border-primary-500 dark:hover:border-primary-500 group flex h-full w-full items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 transition-colors duration-300"-->
+<!--                >-->
+<!--                  <span class="block text-center font-sans">-->
+<!--                    <span-->
+<!--                      class="text-muted-800 dark:text-muted-100 group-hover:text-primary-500 dark:group-hover:text-primary-500 block transition-colors duration-300"-->
+<!--                    >-->
+<!--                      Create a new task-->
+<!--                    </span>-->
+<!--                    <span class="text-muted-400 block text-sm">-->
+<!--                      Add a new task to your project-->
+<!--                    </span>-->
+<!--                  </span>-->
+<!--                </button>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
         </template>
       </BaseTabs>
     </div>

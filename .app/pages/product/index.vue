@@ -19,56 +19,83 @@ definePageMeta({
 const { open } = usePanels()
 
 const productStore = useProductStore()
+const getProducts = productStore.get_products;
+
 
 const initializeData = async () => {
-  await productStore.get_products();
-  await productStore.get_products_by_sold();
-  await productStore.get_products_by_arrival();
+  await getProducts();
+  // await productStore.get_products_by_sold();
+  // await productStore.get_products_by_arrival();
 };
 
-initializeData();
+const productsToShow = ref([])
 
-const {t, locale, locales} = useI18n({useScope: "local"})
+initializeData().then(() => {
+  productsToShow.value = productsForEachPage();
+  console.log(productsToShow);
+});
+
+const {products , message, type, pending} = storeToRefs(productStore)
 
 
+const {t, locale} = useI18n({useScope: "local"})
 
-const placeholderPrices = {
-  original: '49.99',
-  discounted: '29.99',
-};
 
 const route = useRoute()
 const router = useRouter()
 const page = computed(() => parseInt((route.query.page as string) ?? '1'))
 
 const filter = ref('')
-const perPage = ref(4)
+const perPage = ref(2)
 
-watch([filter, perPage], () => {
-  router.push({
-    query: {
-      page: undefined,
-    },
-  })
-})
 
-const query = computed(() => {
-  return {
-    filter: filter.value,
-    perPage: perPage.value,
-    page: page.value,
+const productsForEachPage = () => {
+  let productsToShow = [];
+
+
+  for (let i = ((page.value - 1) * perPage.value); i < (page.value * perPage.value); i++) {
+    if (i < products.value.length) {
+      productsToShow.push(products.value[i]);
+    }
   }
+  return productsToShow;
+}
+
+
+
+watch([page, perPage], () => {
+  initializeData().then(() => {
+    productsToShow.value = productsForEachPage();
+    console.log(productsToShow);
+  });
 })
 
-const { data, pending, error, refresh } = await useFetch(
-  '/api/company/projects/',
-  {
-    query,
-  },
-)
 
-const {products: fetchedProducts, products_arrival, products_sold, search_products,
-  filtered_products, message, type} = storeToRefs(ProductStore)
+
+
+// watch([filter, perPage], () => {
+//   router.push({
+//     query: {
+//       page: undefined,
+//     },
+//   })
+// })
+//
+// const query = computed(() => {
+//   return {
+//     filter: filter.value,
+//     perPage: perPage.value,
+//     page: page.value,
+//   }
+// })
+
+// const { data, pending, error, refresh } = await useFetch(
+//   '/api/company/projects/',
+//   {
+//     query,
+//   },
+// )
+
 
 </script>
 
@@ -99,7 +126,7 @@ const {products: fetchedProducts, products_arrival, products_sold, search_produc
         </BaseButton>
       </template>
       <div>
-        <div v-if="!pending && data?.data.length === 0">
+        <div v-if="!pending && productsToShow.length === 0">
           <BasePlaceholderPage
             title="No matching results"
             subtitle="Looks like we couldn't find any matching results for your search terms. Try other search terms."
@@ -132,7 +159,7 @@ const {products: fetchedProducts, products_arrival, products_sold, search_produc
             >
 
               <BaseCard
-                v-for="item in data?.data"
+                v-for="item in productsToShow"
                 :key="item.id"
                 shape="curved"
                 class="p-4"
@@ -140,23 +167,25 @@ const {products: fetchedProducts, products_arrival, products_sold, search_produc
 
                   <div class="hover:shadow-2xl">
                     <NuxtLink :to="`/product/details/${item.slug}`">
-                      <img :src="item.image" :alt="item.name" class="rounded-lg" />
+                      <img :src="item.get_thumbnail" :alt="item.name[locale]" class="rounded-lg" />
                     </NuxtLink>
                   </div>
 
                 <div class="my-4 flex items-center justify-between">
                   <div>
                     <h4 class="text-muted-800 dark:text-muted-100 font-sans text-base font-medium">
-                      {{ item.name }}
+                      {{ item.name[locale] }}
                     </h4>
                     <div class="text-muted-400 flex items-center gap-1">
                       <Icon name="ph:calendar-blank-duotone" class="h-4 w-4" />
-                      <p class="font-sans text-sm">{{ item.dueDate }}</p>
+                      <p class="font-sans text-sm">{{ item.created_at }}</p>
                     </div>
                   </div>
                   <div class="mt-4">
-                    <p class="text-muted-400 line-through">${{ placeholderPrices.original }}</p>
-                    <p class="text-primary-500">${{ placeholderPrices.discounted }}</p>
+                    <p v-if="(item.discount_value !== 0) && (item.discount_value !== null)" class="text-muted-400 line-through">${{ item.price }}</p>
+                    <p v-else class="text-primary-500">${{ item.price }}</p>
+                    <p v-if="(((item.discount_value !== 0) && (item.discount_value !== null)) && item.discount_type === 'price') " class="text-primary-500">${{ (item.price - item.discount_value)  }}</p>
+                    <p v-if="(((item.discount_value !== 0) && (item.discount_value !== null)) && item.discount_type === 'percentage') " class="text-primary-500">${{ (item.price * (100 - item.discount_value) / 100)  }}</p>
                   </div>
 
                 </div>
@@ -181,9 +210,9 @@ const {products: fetchedProducts, products_arrival, products_sold, search_produc
 
             </TransitionGroup>
           </div>
-          <div class="mt-6">
+          <div class="mt-6" dir="ltr">
             <BasePagination
-              :total-items="data?.total ?? 0"
+              :total-items="products.length ?? 0"
               :item-per-page="perPage"
               :current-page="page"
               shape="curved"

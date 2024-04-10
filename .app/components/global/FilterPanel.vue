@@ -10,6 +10,7 @@ const initializeData = async () => {
   await getCategories();
 };
 
+
 initializeData();
 
 const { type, message, categories: fetchedCategories } = storeToRefs(categoryStore);

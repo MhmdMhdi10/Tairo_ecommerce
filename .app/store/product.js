@@ -5,17 +5,18 @@ import axios from 'axios';
 
 const apiUrl = `${import.meta.env.VITE_API_URL}`
 
-export const useProductStore = defineStore('auth', {
+export const useProductStore = defineStore('product', {
   state: () => ({
-    products: null,
-    products_arrival: null,
-    products_sold: null,
-    product: null,
-    search_products: null,
-    related_products: null,
-    filtered_products: null,
-    message: null,
-    type: null
+    products: [],
+    products_arrival: [],
+    products_sold: [],
+    product: ref(null),
+    search_products: [],
+    related_products: [],
+    filtered_products: [],
+    message: ref(null),
+    type: ref(null),
+    pending: ref(false) // Add a pending state to track pending requests
   }),
   actions: {
 
@@ -27,18 +28,20 @@ export const useProductStore = defineStore('auth', {
       };
 
       try {
-        const res = await axios.get(`${apiUrl}/products/list`, config);
-
+        const res = await axios.get(`${apiUrl}/products/list/`, config);
+        this.pending = true
         if (res.status === 200) {
           const payload = res.data
           this.products = payload.products
           this.message = payload.message
           this.type = payload.type
+          this.pending = false
         } else {
           const payload = res.data
           this.products = null
           this.message = payload.message
           this.type = payload.type
+          this.pending = false
         }
 
       } catch(err){
@@ -53,6 +56,7 @@ export const useProductStore = defineStore('auth', {
         this.products = null
         this.type = payload.type
         this.message = payload.message
+        this.pending = false
       }
     },
 
@@ -130,7 +134,7 @@ export const useProductStore = defineStore('auth', {
       }
     },
 
-    async get_product (productId){
+    async get_product (slug){
       const config = {
         headers: {
           'Accept': 'application/json'
@@ -138,7 +142,7 @@ export const useProductStore = defineStore('auth', {
       };
 
       try {
-        const res = await axios.get(`${apiUrl}/products/product/${productId}`, config);
+        const res = await axios.get(`${apiUrl}/products/product/${slug}`, config);
 
         if (res.status === 200) {
           const payload = res.data
