@@ -39,6 +39,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'nuxt-swiper',
     '@nuxtjs/i18n',
+    '@nuxt/image-edge'
 
   ],
   css: [
