@@ -83,6 +83,7 @@ const { open } = usePanels()
           />
         </button>
         <BaseThemeToggle aria-label="Toggle darkmode" />
+        <DemoToolbarLanguage/>
         <BaseButton
           shape="curved"
           color="primary"
@@ -91,27 +92,7 @@ const { open } = usePanels()
         >
           Buy Tairo
         </BaseButton>
-        <button
-          type="button"
-          class="ltablet:hidden flex items-center justify-center lg:hidden"
-          @click="isMobileOpen = !isMobileOpen"
-          :aria-label="isMobileOpen ? 'Close menu' : 'Open menu'"
-        >
-          <div class="space-y-1.5">
-            <span
-              class="bg-primary-600 block h-0.5 motion-safe:transition-all motion-safe:duration-300"
-              :class="isMobileOpen ? 'w-2' : 'w-6'"
-            ></span>
-            <span
-              class="bg-primary-600 block h-0.5 motion-safe:transition-all motion-safe:duration-300"
-              :class="isMobileOpen ? 'w-6' : 'w-6'"
-            ></span>
-            <span
-              class="bg-primary-600 block h-0.5 motion-safe:transition-all motion-safe:duration-300"
-              :class="isMobileOpen ? 'w-4' : 'w-6'"
-            ></span>
-          </div>
-        </button>
+
       </div>
     </div>
   </div>

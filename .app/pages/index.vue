@@ -15,14 +15,14 @@ definePageMeta({
     <LandingLayout/>
 
     <LandingHero />
-    <LandingCustomizer />
-    <LandingDemos :limit="12" />
-    <LandingLayers />
-    <LandingLayouts />
-    <LandingFeatures />
-    <LandingBenefits />
-    <LandingCta />
-    <LandingContent />
-    <LandingFooter />
+<!--    <LandingCustomizer />-->
+<!--    <LandingDemos :limit="12" />-->
+<!--    <LandingLayers />-->
+<!--    <LandingLayouts />-->
+<!--    <LandingFeatures />-->
+<!--    <LandingBenefits />-->
+<!--    <LandingCta />-->
+<!--    <LandingContent />-->
+<!--    <LandingFooter />-->
   </div>
 </template>

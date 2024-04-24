@@ -160,32 +160,32 @@ watch([page, perPage], () => {
 
               <BaseCard
                 v-for="item in productsToShow"
-                :key="item.id"
+                :key="item?.id"
                 shape="curved"
                 class="p-4"
               >
 
                   <div class="hover:shadow-2xl">
-                    <NuxtLink :to="`/product/details/${item.slug}`">
-                      <img :src="item.get_thumbnail" :alt="item.name[locale]" class="rounded-lg" />
+                    <NuxtLink :to="`/product/details/${item?.slug}`">
+                      <img :src="item?.photo" :alt="item?.name[locale]" class="rounded-lg" />
                     </NuxtLink>
                   </div>
 
                 <div class="my-4 flex items-center justify-between">
                   <div>
                     <h4 class="text-muted-800 dark:text-muted-100 font-sans text-base font-medium">
-                      {{ item.name[locale] }}
+                      {{ item?.name[locale] }}
                     </h4>
                     <div class="text-muted-400 flex items-center gap-1">
                       <Icon name="ph:calendar-blank-duotone" class="h-4 w-4" />
-                      <p class="font-sans text-sm">{{ item.created_at }}</p>
+                      <p class="font-sans text-sm">{{ item?.created_at }}</p>
                     </div>
                   </div>
                   <div class="mt-4">
-                    <p v-if="(item.discount_value !== 0) && (item.discount_value !== null)" class="text-muted-400 line-through">${{ item.price }}</p>
-                    <p v-else class="text-primary-500">${{ item.price }}</p>
-                    <p v-if="(((item.discount_value !== 0) && (item.discount_value !== null)) && item.discount_type === 'price') " class="text-primary-500">${{ (item.price - item.discount_value)  }}</p>
-                    <p v-if="(((item.discount_value !== 0) && (item.discount_value !== null)) && item.discount_type === 'percentage') " class="text-primary-500">${{ (item.price * (100 - item.discount_value) / 100)  }}</p>
+                    <p v-if="(item?.discount_value !== 0) && (item?.discount_value !== null)" class="text-muted-400 line-through">${{ item?.price }}</p>
+                    <p v-else class="text-primary-500">${{ item?.price }}</p>
+                    <p v-if="(((item?.discount_value !== 0) && (item?.discount_value !== null)) && item?.discount_type === 'price') " class="text-primary-500">${{ (item?.price - item?.discount_value)  }}</p>
+                    <p v-if="(((item?.discount_value !== 0) && (item?.discount_value !== null)) && item?.discount_type === 'percentage') " class="text-primary-500">${{ (item?.price * (100 - item?.discount_value) / 100)  }}</p>
                   </div>
 
                 </div>
