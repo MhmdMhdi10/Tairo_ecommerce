@@ -115,29 +115,14 @@ export default defineNuxtConfig({
   },
 
   ignore:  [
-
     'pages/blog/**/*',
     'pages/cart/**/*',
-
     'pages/dashboards/**/*',
     'pages/layouts/**/*',
     'pages/locator/**/*',
-    'pages/policy/**/*',
     'pages/profile/**/*',
     'pages/shipping/**/*',
-    'pages/support/**/*',
-    'pages/wizard/**/*',
+    // 'pages/support/**/*',
     'pages/z',
-    'pages/auth/signup-1',
-    'pages/auth/signup-2',
-    'pages/auth/signup-3',
-    'pages/auth/login-1',
-    'pages/auth/login-2',
-    'pages/auth/login-3',
-    'pages/auth/recovery',
-    'pages/auth',
-    'pages/demos',
-    'pages/test-error'
   ]
-
 })

@@ -1,9 +1,9 @@
 export default defineAppConfig({
   tairo: {
-    title: 'Tairo',
+    title: 'Lalectro',
     error: {
       logo: {
-        component: 'TairoLogo',
+        component: 'LalectroLogoMain',
         props: { class: 'text-primary-500 mx-auto h-40 p-6' },
       },
     },

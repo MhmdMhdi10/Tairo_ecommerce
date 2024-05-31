@@ -156,7 +156,7 @@ async function getDemoData() {
     },
     {
       id: '10',
-      title: 'Have you considered product management training?',
+      title: 'Have you considered shop management training?',
       published: '3 days ago',
       image: '/img/illustrations/layouts/post-10.svg',
       category: 'Product',

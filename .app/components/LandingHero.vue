@@ -1,4 +1,81 @@
 <script setup lang="ts">
+import {useCategoryStore} from "~/store/category";
+import {useProductStore} from "~/store/product";
+import {storeToRefs} from "pinia";
+
+const productStore = useProductStore()
+const categoryStore = useCategoryStore()
+
+const getProducts = productStore.get_products;
+const getProductsBySold = productStore.get_products_by_sold;
+const getProductsByArrival = productStore.get_products_by_arrival;
+const getCategories = categoryStore.getCategories;
+
+
+const initializeData = async () => {
+  // await getProducts();
+  await getProductsByArrival(4);
+  await getProductsBySold(4);
+  await getCategories();
+};
+
+
+
+
+const productsToShow = ref([])
+const productsToShow_2 = ref([])
+const productsToShow_3 = ref([])
+const productsToShow_4 = ref([])
+
+
+
+
+initializeData().then(() => {
+  productsToShow.value = productsForEachPage(1,2);
+  productsToShow_2.value = productsForEachPage(2,2);
+  productsToShow_3.value = productsForEachPage(1, 2);
+  productsToShow_4.value = productsForEachPage(2, 2)
+  console.log(productsToShow, '1111111111111111111111111111');
+  console.log(productsToShow_2, '2222222222222222222222222222');
+  console.log(productsToShow_3, '33333333333333333333333333333');
+  console.log(productsToShow_4, '44444444444444444444444444444');
+
+});
+
+const {products, products_arrival, products_sold} = storeToRefs(productStore)
+
+const {categories} = storeToRefs(categoryStore)
+
+
+
+
+const {t, locale} = useI18n({useScope: "local"})
+
+
+const route = useRoute()
+const router = useRouter()
+// const page = ref(1)
+
+const filter = ref('')
+// const perPage = ref(2)
+
+
+const productsForEachPage = (page, perPage) => {
+  let productsToShoww = [];
+
+
+  for (let i = ((page - 1) * perPage); i < (page * perPage); i++) {
+    if (i < products_arrival.value.length) {
+      productsToShoww.push(products_arrival.value[i]);
+    }
+  }
+  return productsToShoww;
+}
+
+
+
+
+
 const { y } = useNinjaWindowScroll()
 
 const gaugePersonal = reactive(useGaugePersonal())
@@ -104,154 +181,154 @@ function useGaugePersonal() {
           lead="tight"
           class="text-muted-800 xs:!text-4xl mx-auto mb-4 max-w-2xl dark:text-white"
         >
-          The dashboard system that makes you say
+          {{ t("Bringing Power to Your Projects with") }}
           <span
             class="text-primary-500 font-hairline underline decoration-dotted underline-offset-4"
-            >wow</span
+          ><strong>Lalectro</strong></span
           >
         </BaseHeading>
         <BaseParagraph
           size="lg"
           class="text-muted-500 dark:text-muted-100 mx-auto mb-4 max-w-2xl"
         >
-          Tairo is the ultimate solution for developers looking to build
-          beautiful Nuxt dashboards in no time, with the power of Shuriken UI
-          and Tailwind CSS.
+          {{ t("Discover a wide range of electrical and industrial products, from contactors and lamps to cables and circuit breakers.At") }} <strong>Lalectro.com</strong>{{t(", we've got everything you need to power your projects.") }}
         </BaseParagraph>
         <div class="flex items-center justify-center">
           <BaseButton
             shape="curved"
             color="primary"
-            to="https://go.cssninja.io/buy-tairo"
+            to="/shop"
             shadow="hover"
             class="!h-12 w-44"
           >
-            Buy Tairo Now
+            {{ t('Shop Now') }}
           </BaseButton>
         </div>
+
+
       </div>
       <!-- Components -->
       <fieldset
         disabled
-        class="ltablet:min-h-[760px] min-h-[2075px] w-full sm:min-h-[760px] lg:min-h-[750px]"
+        class="ltablet:min-h-[660px] min-h-[1975px] w-full sm:min-h-[760px] lg:min-h-[750px]"
         aria-hidden="true"
       >
         <div
-          class="group-[&.scrolled]/landing:bg-muted-100 group-[&.scrolled]/landing:dark:bg-muted-900 group-[&.scrolled]/landing:border-muted-200 group-[&.scrolled]/landing:dark:border-muted-800 group-[&.scrolled]/landing:ltablet:ps-24 relative z-30 mt-12 overflow-hidden border group-[&.scrolled]/landing:rounded-xl group-[&:not(.scrolled)]/landing:border-transparent group-[&.scrolled]/landing:pb-6 group-[&.scrolled]/landing:pe-6 group-[&.scrolled]/landing:ps-6 group-[&.scrolled]/landing:pt-20 motion-safe:transition-all motion-safe:duration-300 group-[&.scrolled]/landing:lg:ps-28"
+          class="group-[&.scrolled]/landing:bg-muted-100 group-[&.scrolled]/landing:dark:bg-muted-900 group-[&.scrolled]/landing:border-muted-200 group-[&.scrolled]/landing:dark:border-muted-800 group-[&.scrolled]/landing:ltablet:ps-24 relative z-30 mt-12 overflow-hidden border group-[&.scrolled]/landing:rounded-xl group-[&:not(.scrolled)]/landing:border-transparent group-[&.scrolled]/landing:pb-6 group-[&.scrolled]/landing:pe-6 group-[&.scrolled]/landing:ps-6 group-[&.scrolled]/landing:pt-10 motion-safe:transition-all motion-safe:duration-300 group-[&.scrolled]/landing:lg:ps-6"
         >
           <!-- Fake sidebar -->
-          <div
-            class="ltablet:w-16 ltablet:flex dark:bg-muted-800 absolute left-0 top-0 hidden h-full w-20 flex-col bg-white group-[&.scrolled]/landing:translate-x-0 group-[&:not(.scrolled)]/landing:-translate-x-full group-[&.scrolled]/landing:opacity-100 group-[&:not(.scrolled)]/landing:opacity-0 motion-safe:transition-all motion-safe:duration-200 lg:flex"
-          >
-            <div class="flex h-20 w-full items-center justify-center">
-              <TairoLogo class="text-primary-500 h-8 w-8" />
-            </div>
-            <div class="flex h-16 w-full items-center justify-center">
-              <div
-                class="nui-mask nui-mask-blob bg-primary-500/10 flex h-12 w-12 items-center justify-center motion-safe:transition-colors motion-safe:duration-200"
-              >
-                <Icon
-                  name="ph:house-duotone"
-                  class="text-primary-500 h-5 w-5"
-                />
-              </div>
-            </div>
-            <div class="flex h-16 w-full items-center justify-center">
-              <div
-                class="nui-mask nui-mask-blob hover:bg-muted-100 dark:hover:bg-muted-700/50 flex h-12 w-12 items-center justify-center motion-safe:transition-colors motion-safe:duration-200"
-              >
-                <Icon
-                  name="ph:grid-four-duotone"
-                  class="text-muted-400 h-5 w-5"
-                />
-              </div>
-            </div>
-            <div class="flex h-16 w-full items-center justify-center">
-              <div
-                class="nui-mask nui-mask-blob hover:bg-muted-100 dark:hover:bg-muted-700/50 flex h-12 w-12 items-center justify-center motion-safe:transition-colors motion-safe:duration-200"
-              >
-                <Icon name="ph:users-duotone" class="text-muted-400 h-5 w-5" />
-              </div>
-            </div>
-            <div class="flex h-16 w-full items-center justify-center">
-              <div
-                class="nui-mask nui-mask-blob hover:bg-muted-100 dark:hover:bg-muted-700/50 flex h-12 w-12 items-center justify-center motion-safe:transition-colors motion-safe:duration-200"
-              >
-                <Icon
-                  name="ph:chat-circle-duotone"
-                  class="text-muted-400 h-5 w-5"
-                />
-              </div>
-            </div>
-            <div class="mt-auto flex h-16 w-full items-center justify-center">
-              <div
-                class="nui-mask nui-mask-blob hover:bg-muted-100 dark:hover:bg-muted-700/50 flex h-12 w-12 items-center justify-center motion-safe:transition-colors motion-safe:duration-200"
-              >
-                <Icon
-                  name="ph:gear-six-duotone"
-                  class="text-muted-400 h-5 w-5"
-                />
-              </div>
-            </div>
-            <div class="flex h-16 w-full items-center justify-center">
-              <div
-                class="nui-mask nui-mask-blob hover:bg-muted-100 dark:hover:bg-muted-700/50 flex h-12 w-12 items-center justify-center motion-safe:transition-colors motion-safe:duration-200"
-              >
-                <BaseAvatar
-                  shape="straight"
-                  size="sm"
-                  src="/img/avatars/24.svg"
-                  class="nui-mask nui-mask-blob"
-                />
-              </div>
-            </div>
-          </div>
+<!--          <div-->
+<!--            class="ltablet:w-16 ltablet:flex dark:bg-muted-800 absolute left-0 top-0 hidden h-full w-20 flex-col bg-white group-[&.scrolled]/landing:translate-x-0 group-[&:not(.scrolled)]/landing:-translate-x-full group-[&.scrolled]/landing:opacity-100 group-[&:not(.scrolled)]/landing:opacity-0 motion-safe:transition-all motion-safe:duration-200 lg:flex"-->
+<!--          >-->
+<!--            <div class="flex h-20 w-full items-center justify-center">-->
+<!--              <TairoLogo class="text-primary-500 h-8 w-8" />-->
+<!--            </div>-->
+<!--            <div class="flex h-16 w-full items-center justify-center">-->
+<!--              <div-->
+<!--                class="nui-mask nui-mask-blob bg-primary-500/10 flex h-12 w-12 items-center justify-center motion-safe:transition-colors motion-safe:duration-200"-->
+<!--              >-->
+<!--                <Icon-->
+<!--                  name="ph:basket-duotone"-->
+<!--                  class="text-primary-500 h-5 w-5"-->
+<!--                />-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="flex h-16 w-full items-center justify-center">-->
+<!--              <div-->
+<!--                class="nui-mask nui-mask-blob hover:bg-muted-100 dark:hover:bg-muted-700/50 flex h-12 w-12 items-center justify-center motion-safe:transition-colors motion-safe:duration-200"-->
+<!--              >-->
+<!--                <Icon-->
+<!--                  name="ph:users-three-duotone"-->
+<!--                  class="text-muted-400 h-5 w-5"-->
+<!--                />-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="flex h-16 w-full items-center justify-center">-->
+<!--              <div-->
+<!--                class="nui-mask nui-mask-blob hover:bg-muted-100 dark:hover:bg-muted-700/50 flex h-12 w-12 items-center justify-center motion-safe:transition-colors motion-safe:duration-200"-->
+<!--              >-->
+<!--                <Icon name="ph:users-duotone" class="text-muted-400 h-5 w-5" />-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <div class="flex h-16 w-full items-center justify-center">-->
+<!--              <div-->
+<!--                class="nui-mask nui-mask-blob hover:bg-muted-100 dark:hover:bg-muted-700/50 flex h-12 w-12 items-center justify-center motion-safe:transition-colors motion-safe:duration-200"-->
+<!--              >-->
+<!--                <Icon-->
+<!--                  name="ph:chat-circle-duotone"-->
+<!--                  class="text-muted-400 h-5 w-5"-->
+<!--                />-->
+<!--              </div>-->
+<!--            </div>-->
+<!--&lt;!&ndash;            <div class="mt-auto flex h-16 w-full items-center justify-center">&ndash;&gt;-->
+<!--&lt;!&ndash;              <div&ndash;&gt;-->
+<!--&lt;!&ndash;                class="nui-mask nui-mask-blob hover:bg-muted-100 dark:hover:bg-muted-700/50 flex h-12 w-12 items-center justify-center motion-safe:transition-colors motion-safe:duration-200"&ndash;&gt;-->
+<!--&lt;!&ndash;              >&ndash;&gt;-->
+<!--&lt;!&ndash;                <Icon&ndash;&gt;-->
+<!--&lt;!&ndash;                  name="ph:gear-six-duotone"&ndash;&gt;-->
+<!--&lt;!&ndash;                  class="text-muted-400 h-5 w-5"&ndash;&gt;-->
+<!--&lt;!&ndash;                />&ndash;&gt;-->
+<!--&lt;!&ndash;              </div>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;            <div class="flex h-16 w-full items-center justify-center">&ndash;&gt;-->
+<!--&lt;!&ndash;              <div&ndash;&gt;-->
+<!--&lt;!&ndash;                class="nui-mask nui-mask-blob hover:bg-muted-100 dark:hover:bg-muted-700/50 flex h-12 w-12 items-center justify-center motion-safe:transition-colors motion-safe:duration-200"&ndash;&gt;-->
+<!--&lt;!&ndash;              >&ndash;&gt;-->
+<!--&lt;!&ndash;                <BaseAvatar&ndash;&gt;-->
+<!--&lt;!&ndash;                  shape="straight"&ndash;&gt;-->
+<!--&lt;!&ndash;                  size="sm"&ndash;&gt;-->
+<!--&lt;!&ndash;                  src="/img/avatars/24.svg"&ndash;&gt;-->
+<!--&lt;!&ndash;                  class="nui-mask nui-mask-blob"&ndash;&gt;-->
+<!--&lt;!&ndash;                />&ndash;&gt;-->
+<!--&lt;!&ndash;              </div>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--          </div>-->
           <!-- Fake navbar -->
-          <div
-            class="ltablet:ps-24 absolute left-0 top-0 flex h-20 w-full items-center justify-between pe-6 ps-6 group-[&.scrolled]/landing:translate-y-0 group-[&:not(.scrolled)]/landing:-translate-y-full group-[&.scrolled]/landing:opacity-100 group-[&:not(.scrolled)]/landing:opacity-0 motion-safe:transition-all motion-safe:duration-200 lg:ps-28"
-          >
-            <div class="flex h-full items-center gap-4">
-              <div
-                class="nui-mask nui-mask-blob dark:hover:bg-muted-800 flex h-10 w-10 items-center justify-center hover:bg-white motion-safe:transition-colors motion-safe:duration-200"
-              >
-                <Icon name="lucide:menu" class="text-muted-400 h-5 w-5" />
-              </div>
-              <BaseText class="hidden sm:inline-block">My Dashboard</BaseText>
-            </div>
-            <div class="flex h-full items-center justify-end gap-1">
-              <div
-                class="nui-mask nui-mask-blob dark:hover:bg-muted-800 flex h-10 w-10 items-center justify-center hover:bg-white motion-safe:transition-colors motion-safe:duration-200"
-              >
-                <Icon name="ph:bell-duotone" class="text-muted-400 h-5 w-5" />
-              </div>
-              <div
-                class="nui-mask nui-mask-blob dark:hover:bg-muted-800 flex h-10 w-10 items-center justify-center hover:bg-white motion-safe:transition-colors motion-safe:duration-200"
-              >
-                <Icon
-                  name="ph:circles-four-duotone"
-                  class="text-muted-400 h-5 w-5"
-                />
-              </div>
-              <div
-                class="nui-mask nui-mask-blob dark:hover:bg-muted-800 flex h-10 w-10 items-center justify-center hover:bg-white motion-safe:transition-colors motion-safe:duration-200"
-              >
-                <Icon
-                  name="ph:translate-duotone"
-                  class="text-muted-400 h-5 w-5"
-                />
-              </div>
-              <div
-                class="nui-mask nui-mask-blob dark:hover:bg-muted-800 flex h-10 w-10 items-center justify-center hover:bg-white motion-safe:transition-colors motion-safe:duration-200"
-              >
-                <BaseAvatar
-                  shape="straight"
-                  size="xs"
-                  src="/img/avatars/24.svg"
-                  class="nui-mask nui-mask-blob"
-                />
-              </div>
-            </div>
-          </div>
+<!--          <div-->
+<!--            class="ltablet:ps-24 absolute left-0 top-0 flex h-20 w-full items-center justify-between pe-6 ps-6 group-[&.scrolled]/landing:translate-y-0 group-[&:not(.scrolled)]/landing:-translate-y-full group-[&.scrolled]/landing:opacity-100 group-[&:not(.scrolled)]/landing:opacity-0 motion-safe:transition-all motion-safe:duration-200 lg:ps-28"-->
+<!--          >-->
+<!--            <div class="flex h-full items-center gap-4">-->
+<!--              <div-->
+<!--                class="nui-mask nui-mask-blob dark:hover:bg-muted-800 flex h-10 w-10 items-center justify-center hover:bg-white motion-safe:transition-colors motion-safe:duration-200"-->
+<!--              >-->
+<!--                <Icon name="lucide:menu" class="text-muted-400 h-5 w-5" />-->
+<!--              </div>-->
+<!--              <BaseText class="hidden sm:inline-block">Shop</BaseText>-->
+<!--            </div>-->
+<!--            <div class="flex h-full items-center justify-end gap-1">-->
+<!--              <div-->
+<!--                class="nui-mask nui-mask-blob dark:hover:bg-muted-800 flex h-10 w-10 items-center justify-center hover:bg-white motion-safe:transition-colors motion-safe:duration-200"-->
+<!--              >-->
+<!--                <Icon name="ph:bell-duotone" class="text-muted-400 h-5 w-5" />-->
+<!--              </div>-->
+<!--              <div-->
+<!--                class="nui-mask nui-mask-blob dark:hover:bg-muted-800 flex h-10 w-10 items-center justify-center hover:bg-white motion-safe:transition-colors motion-safe:duration-200"-->
+<!--              >-->
+<!--                <Icon-->
+<!--                  name="ph:circles-four-duotone"-->
+<!--                  class="text-muted-400 h-5 w-5"-->
+<!--                />-->
+<!--              </div>-->
+<!--              <div-->
+<!--                class="nui-mask nui-mask-blob dark:hover:bg-muted-800 flex h-10 w-10 items-center justify-center hover:bg-white motion-safe:transition-colors motion-safe:duration-200"-->
+<!--              >-->
+<!--                <Icon-->
+<!--                  name="ph:translate-duotone"-->
+<!--                  class="text-muted-400 h-5 w-5"-->
+<!--                />-->
+<!--              </div>-->
+<!--              <div-->
+<!--                class="nui-mask nui-mask-blob dark:hover:bg-muted-800 flex h-10 w-10 items-center justify-center hover:bg-white motion-safe:transition-colors motion-safe:duration-200"-->
+<!--              >-->
+<!--                <BaseAvatar-->
+<!--                  shape="straight"-->
+<!--                  size="xs"-->
+<!--                  src="/img/avatars/24.svg"-->
+<!--                  class="nui-mask nui-mask-blob"-->
+<!--                />-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
           <div
             class="ltablet:grid-cols-3 ltablet:gap-6 grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4 lg:gap-4"
           >
@@ -259,89 +336,244 @@ function useGaugePersonal() {
             <div
               class="ltablet:gap-6 group-[&:not(.scrolled)]/landing:ltablet:mt-24 group-[&:not(.scrolled)]/landing:ptablet:mt-24 flex flex-col gap-6 sm:gap-3 lg:gap-4 group-[&:not(.scrolled)]/landing:lg:mt-24"
             >
+
+                <BaseHeading as="h3" size="2xl" weight="medium" class="mx-auto">
+                  {{ t('Recently added') }}
+                </BaseHeading>
+
               <!-- Widget -->
-              <BaseCard shape="curved" elevated class="flex flex-col p-6">
-                <div class="mb-6 flex items-center justify-between">
-                  <BaseHeading
-                    as="h3"
-                    size="sm"
-                    weight="semibold"
-                    lead="tight"
-                    class="text-muted-800 dark:text-white"
-                  >
-                    <span>Personal Score</span>
-                  </BaseHeading>
+
+              <BaseCard
+                v-for="item in productsToShow"
+                :key="item?.id"
+                shape="curved"
+                class="p-2"
+              >
+
+              <div class="hover:shadow-lg"> <!-- Less intense shadow -->
+                <NuxtLink :to="`/product/details/${item?.slug}`">
+                  <img :src="item?.photo" :alt="item?.name[locale]" class="rounded-lg h-32 w-32 object-cover" /> <!-- Smaller image -->
+                </NuxtLink>
+              </div>
+
+              <div class="my-2 flex items-center justify-between"> <!-- Reduced margin -->
+                <div>
+                  <h4 class="text-muted-800 dark:text-muted-100 font-sans text-sm font-medium"> <!-- Smaller font size -->
+                    {{ item?.name[locale] }}
+                  </h4>
+                  <div class="text-muted-400 flex items-center gap-1 text-xs"> <!-- Smaller font size and tighter gap -->
+                    <Icon name="ph:calendar-blank-duotone" class="h-3 w-3" /> <!-- Smaller icon -->
+                    <p>{{ item?.created_at.slice(0, 10) }}</p>
+                  </div>
                 </div>
-                <div class="flex justify-center py-16">
-                  <AddonApexcharts
-                    v-bind="gaugePersonal"
-                    class="-mt-14 motion-safe:transition-all motion-safe:duration-200"
-                  />
+                <div class="mt-2"> <!-- Reduced margin -->
+                  <p v-if="(item?.discount_value !== 0) && (item?.discount_value !== null)" class="text-muted-400 line-through text-sm"> <!-- Smaller text -->
+                    {{t("Tooman")}} {{ item?.price }}
+                  </p>
+                  <p class="text-primary-500 text-sm"> <!-- Smaller text -->
+                    {{t("Tooman")}} {{ item?.discount_type === 'price' ? (item?.price - item?.discount_value) : item?.discount_type === 'percentage' ? (item?.price * (100 - item?.discount_value) / 100) : item?.price }}
+                  </p>
                 </div>
-                <div class="mt-auto text-center">
-                  <BaseParagraph size="sm">
-                    <span class="text-muted-400">
-                      Your score has been calculated based on the latest metrics
-                    </span>
-                  </BaseParagraph>
-                </div>
+              </div>
+
+<!--              <div class="flex items-center gap-1"> &lt;!&ndash; Tighter gap &ndash;&gt;-->
+<!--                <BaseButton shape="curved" color="primary" class="w-full h-7 text-xs"> &lt;!&ndash; Smaller button &ndash;&gt;-->
+<!--                  {{ t('Add to cart') }}-->
+<!--                </BaseButton>-->
+<!--                <BaseButton-->
+<!--                  shape="curved"-->
+<!--                  class="text-muted-400 hover:bg-primary-500 hover:shadow-primary-500/30 dark:hover:shadow-primary-800/30 flex h-6 w-6 items-center justify-center rounded-full transition-all duration-300 hover:text-white hover:shadow-lg"-->
+<!--                >-->
+<!--                  <Icon name="feather:heart" class="h-3 w-3" /> &lt;!&ndash; Smaller icon &ndash;&gt;-->
+<!--                </BaseButton>-->
+<!--              </div>-->
+
               </BaseCard>
-            </div>
-            <!-- Col -->
-            <div class="ltablet:gap-6 flex flex-col gap-6 sm:gap-3 lg:gap-4">
-              <!-- Widget -->
-              <BaseCard shape="curved" elevated class="p-6">
-                <DemoInboxMessage
-                  picture="/img/avatars/10.svg"
-                  name="Kendra W."
-                  title="Design Project"
-                  text="Where are we in terms of design? We need to review the new screens."
-                  time="28 minutes"
-                  shape="curved"
-                />
-              </BaseCard>
-              <!-- Widget -->
-              <BaseCard shape="curved" elevated class="p-6">
-                <DemoInfoBadges
-                  image="/img/illustrations/widgets/1.svg"
-                  badge-small="/img/illustrations/widgets/3.svg"
-                  badge-medium="/img/illustrations/widgets/2.svg"
-                  title="You've unlocked 2 new Achievements"
-                  text="Congrats, your efforts have been rewarded. Keep up like this!"
-                />
-              </BaseCard>
+
+
+
             </div>
             <!-- Col -->
             <div
               class="ltablet:gap-6 group-[&:not(.scrolled)]/landing:ltablet:mt-16 group-[&:not(.scrolled)]/landing:ptablet:mt-16 flex flex-col gap-6 sm:hidden sm:gap-3 lg:flex lg:gap-4 group-[&:not(.scrolled)]/landing:lg:mt-16"
             >
-              <!-- Widget -->
-              <BaseCard shape="curved" elevated class="p-4">
-                <DemoTeamSearchCompact shape="curved" />
+
+              <BaseHeading as="h3" size="2xl" weight="medium" class="mx-auto">
+                {{ t('Recently Added') }}
+              </BaseHeading>
+
+              <BaseCard
+                v-for="item in productsToShow_2"
+                :key="item?.id"
+                shape="curved"
+                class="p-2"
+              >
+
+                <div class="hover:shadow-lg"> <!-- Less intense shadow -->
+                  <NuxtLink :to="`/product/details/${item?.slug}`">
+                    <img :src="item?.photo" :alt="item?.name[locale]" class="rounded-lg h-32 w-32 object-cover" /> <!-- Smaller image -->
+                  </NuxtLink>
+                </div>
+
+                <div class="my-2 flex items-center justify-between"> <!-- Reduced margin -->
+                  <div>
+                    <h4 class="text-muted-800 dark:text-muted-100 font-sans text-sm font-medium"> <!-- Smaller font size -->
+                      {{ item?.name[locale] }}
+                    </h4>
+                    <div class="text-muted-400 flex items-center gap-1 text-xs"> <!-- Smaller font size and tighter gap -->
+                      <Icon name="ph:calendar-blank-duotone" class="h-3 w-3" /> <!-- Smaller icon -->
+                      <p>{{ item?.created_at.slice(0, 10) }}</p>
+                    </div>
+                  </div>
+                  <div class="mt-2"> <!-- Reduced margin -->
+                    <p v-if="(item?.discount_value !== 0) && (item?.discount_value !== null)" class="text-muted-400 line-through text-sm"> <!-- Smaller text -->
+                      {{t("Tooman")}} {{ item?.price }}
+                    </p>
+                    <p class="text-primary-500 text-sm"> <!-- Smaller text -->
+                      {{t("Tooman")}} {{ item?.discount_type === 'price' ? (item?.price - item?.discount_value) : item?.discount_type === 'percentage' ? (item?.price * (100 - item?.discount_value) / 100) : item?.price }}
+                    </p>
+                  </div>
+                </div>
+
+<!--                <div class="flex items-center gap-1"> &lt;!&ndash; Tighter gap &ndash;&gt;-->
+<!--                  <BaseButton shape="curved" color="primary" class="w-full h-7 text-xs"> &lt;!&ndash; Smaller button &ndash;&gt;-->
+<!--                    Add to cart-->
+<!--                  </BaseButton>-->
+<!--                  <BaseButton-->
+<!--                    shape="curved"-->
+<!--                    class="text-muted-400 hover:bg-primary-500 hover:shadow-primary-500/30 dark:hover:shadow-primary-800/30 flex h-6 w-6 items-center justify-center rounded-full transition-all duration-300 hover:text-white hover:shadow-lg"-->
+<!--                  >-->
+<!--                    <Icon name="feather:heart" class="h-3 w-3" /> &lt;!&ndash; Smaller icon &ndash;&gt;-->
+<!--                  </BaseButton>-->
+<!--                </div>-->
+
               </BaseCard>
-              <!-- Widget -->
-              <BaseCard shape="curved" elevated class="p-3">
-                <DemoVideoCompact shape="curved" />
-              </BaseCard>
+
+
             </div>
+
             <!-- Col -->
             <div
-              class="ltablet:gap-6 group-[&:not(.scrolled)]/landing:ltablet:mt-10 group-[&:not(.scrolled)]/landing:ptablet:mt-10 flex flex-col gap-6 sm:gap-3 lg:gap-4 group-[&:not(.scrolled)]/landing:lg:mt-10"
+              class="ltablet:gap-6 group-[&:not(.scrolled)]/landing:ltablet:mt-24 group-[&:not(.scrolled)]/landing:ptablet:mt-24 flex flex-col gap-6 sm:gap-3 lg:gap-4 group-[&:not(.scrolled)]/landing:lg:mt-24"
             >
+
+              <BaseHeading as="h3" size="2xl" weight="medium" class="mx-auto">
+                {{ t('Best Selling') }}
+              </BaseHeading>
               <!-- Widget -->
-              <BaseCard shape="curved" elevated class="p-6">
-                <DemoProgressCircle
-                  image="/img/avatars/6.svg"
-                  :title="`${y < 500 ? Math.trunc(y / 5) : 100}% completed!`"
-                  text="Congrats, your efforts have been rewarded. Keep up like this!"
-                  :value="y < 500 ? Math.trunc(y / 5) : 100"
-                />
+
+              <BaseCard
+                v-for="item in productsToShow_3"
+                :key="item?.id"
+                shape="curved"
+                class="p-2"
+              >
+
+                <div class="hover:shadow-lg"> <!-- Less intense shadow -->
+                  <NuxtLink :to="`/product/details/${item?.slug}`">
+                    <img :src="item?.photo" :alt="item?.name[locale]" class="rounded-lg h-32 w-32 object-cover" /> <!-- Smaller image -->
+                  </NuxtLink>
+                </div>
+
+                <div class="my-2 flex items-center justify-between"> <!-- Reduced margin -->
+                  <div>
+                    <h4 class="text-muted-800 dark:text-muted-100 font-sans text-sm font-medium"> <!-- Smaller font size -->
+                      {{ item?.name[locale] }}
+                    </h4>
+                    <div class="text-muted-400 flex items-center gap-1 text-xs"> <!-- Smaller font size and tighter gap -->
+                      <Icon name="ph:calendar-blank-duotone" class="h-3 w-3" /> <!-- Smaller icon -->
+                      <p>{{ item?.created_at.slice(0, 10) }}</p>
+                    </div>
+                  </div>
+                  <div class="mt-2"> <!-- Reduced margin -->
+                    <p v-if="(item?.discount_value !== 0) && (item?.discount_value !== null)" class="text-muted-400 line-through text-sm"> <!-- Smaller text -->
+                      {{t("Tooman")}} {{ item?.price }}
+                    </p>
+                    <p class="text-primary-500 text-sm"> <!-- Smaller text -->
+                      {{t("Tooman")}} {{ item?.discount_type === 'price' ? (item?.price - item?.discount_value) : item?.discount_type === 'percentage' ? (item?.price * (100 - item?.discount_value) / 100) : item?.price }}
+                    </p>
+                  </div>
+                </div>
+
+<!--                <div class="flex items-center gap-1"> &lt;!&ndash; Tighter gap &ndash;&gt;-->
+<!--                  <BaseButton shape="curved" color="primary" class="w-full h-7 text-xs"> &lt;!&ndash; Smaller button &ndash;&gt;-->
+<!--                    Add to cart-->
+<!--                  </BaseButton>-->
+<!--                  <BaseButton-->
+<!--                    shape="curved"-->
+<!--                    class="text-muted-400 hover:bg-primary-500 hover:shadow-primary-500/30 dark:hover:shadow-primary-800/30 flex h-6 w-6 items-center justify-center rounded-full transition-all duration-300 hover:text-white hover:shadow-lg"-->
+<!--                  >-->
+<!--                    <Icon name="feather:heart" class="h-3 w-3" /> &lt;!&ndash; Smaller icon &ndash;&gt;-->
+<!--                  </BaseButton>-->
+<!--                </div>-->
+
               </BaseCard>
-              <!-- Widget -->
-              <BaseCard shape="curved" elevated class="p-6">
-                <DemoFollowersCompact />
-              </BaseCard>
+
+
+
             </div>
+
+
+            <!-- Col -->
+            <div
+              class="ltablet:gap-6 group-[&:not(.scrolled)]/landing:ltablet:mt-16 group-[&:not(.scrolled)]/landing:ptablet:mt-16 flex flex-col gap-6 sm:hidden sm:gap-3 lg:flex lg:gap-4 group-[&:not(.scrolled)]/landing:lg:mt-16"
+            >
+
+              <BaseHeading as="h3" size="2xl" weight="medium" class="mx-auto">
+                {{ t('Best Selling') }}
+              </BaseHeading>
+
+              <BaseCard
+                v-for="item in productsToShow_4"
+                :key="item?.id"
+                shape="curved"
+                class="p-2"
+              >
+
+                <div class="hover:shadow-lg"> <!-- Less intense shadow -->
+                  <NuxtLink :to="`/product/details/${item?.slug}`">
+                    <img :src="item?.photo" :alt="item?.name[locale]" class="rounded-lg h-32 w-32 object-cover" /> <!-- Smaller image -->
+                  </NuxtLink>
+                </div>
+
+                <div class="my-2 flex items-center justify-between"> <!-- Reduced margin -->
+                  <div>
+                    <h4 class="text-muted-800 dark:text-muted-100 font-sans text-sm font-medium"> <!-- Smaller font size -->
+                      {{ item?.name[locale] }}
+                    </h4>
+                    <div class="text-muted-400 flex items-center gap-1 text-xs"> <!-- Smaller font size and tighter gap -->
+                      <Icon name="ph:calendar-blank-duotone" class="h-3 w-3" /> <!-- Smaller icon -->
+                      <p>{{ item?.created_at.slice(0, 10) }}</p>
+                    </div>
+                  </div>
+                  <div class="mt-2"> <!-- Reduced margin -->
+                    <p v-if="(item?.discount_value !== 0) && (item?.discount_value !== null)" class="text-muted-400 line-through text-sm"> <!-- Smaller text -->
+                      {{t("Tooman")}} {{ item?.price }}
+                    </p>
+                    <p class="text-primary-500 text-sm"> <!-- Smaller text -->
+                      {{t("Tooman")}} {{ item?.discount_type === 'price' ? (item?.price - item?.discount_value) : item?.discount_type === 'percentage' ? (item?.price * (100 - item?.discount_value) / 100) : item?.price }}
+                    </p>
+                  </div>
+                </div>
+
+<!--                <div class="flex items-center gap-1"> &lt;!&ndash; Tighter gap &ndash;&gt;-->
+<!--                  <BaseButton shape="curved" color="primary" class="w-full h-7 text-xs"> &lt;!&ndash; Smaller button &ndash;&gt;-->
+<!--                    {{ t('Add to cart') }}-->
+<!--                  </BaseButton>-->
+<!--                  <BaseButton-->
+<!--                    shape="curved"-->
+<!--                    class="text-muted-400 hover:bg-primary-500 hover:shadow-primary-500/30 dark:hover:shadow-primary-800/30 flex h-6 w-6 items-center justify-center rounded-full transition-all duration-300 hover:text-white hover:shadow-lg"-->
+<!--                  >-->
+<!--                    <Icon name="feather:heart" class="h-3 w-3" /> &lt;!&ndash; Smaller icon &ndash;&gt;-->
+<!--                  </BaseButton>-->
+<!--                </div>-->
+
+              </BaseCard>
+
+
+            </div>
+
+
           </div>
         </div>
       </fieldset>

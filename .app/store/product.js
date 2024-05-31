@@ -10,6 +10,10 @@ export const useProductStore = defineStore('product', {
     products: [],
     products_arrival: [],
     products_sold: [],
+    total_products: ref(0),
+    total_by_sold: ref(0),
+    total_by_arrival: ref(0),
+    total_search_products: ref(0),
     product: ref(null),
     search_products: [],
     related_products: [],
@@ -20,19 +24,25 @@ export const useProductStore = defineStore('product', {
   }),
   actions: {
 
-    async get_products()  {
+    async get_products(limit = 12, page = 1 )  {
       const config = {
         headers: {
           'Accept': 'application/json'
         }
       };
 
+      const params = {
+        limit: limit,
+        page: page
+      };
+
       try {
-        const res = await axios.get(`${apiUrl}/products/list/`, config);
+        const res = await axios.get(`${apiUrl}/products/list/`, { ...config, params });
         this.pending = true
         if (res.status === 200) {
           const payload = res.data
           this.products = payload.products
+          this.total_products = payload.total_products;
           this.message = payload.message
           this.type = payload.type
           this.pending = false
@@ -60,24 +70,32 @@ export const useProductStore = defineStore('product', {
       }
     },
 
-    async get_products_by_arrival (){
+    async get_products_by_arrival (limit = 12, page = 1 ){
       const config = {
         headers: {
           'Accept': 'application/json'
         }
       };
 
+      const params = {
+        sortBy: 'date_created',
+        order: 'desc',
+        limit: limit,
+        page: page
+      };
+
       try {
-        const res = await axios.get(`${apiUrl}/products/list?sortBy=date_created&order=desc&limit=3`, config);
+        const res = await axios.get(`${apiUrl}/products/list/`, { ...config, params });
 
         if (res.status === 200) {
           const payload = res.data
-          this.products = payload.products
+          this.products_arrival = payload.products
+          this.total_by_arrival = payload.total_products;
           this.message = payload.message
           this.type = payload.type
         } else {
           const payload = res.data
-          this.products = null
+          this.products_arrival = null
           this.message = payload.message
           this.type = payload.type
         }
@@ -91,30 +109,38 @@ export const useProductStore = defineStore('product', {
           errorType = err.response.data.type || errorType;
         }
         const payload = { "type": errorType, "message": errorMessage }
-        this.products = null
+        this.products_arrival = null
         this.type = payload.type
         this.message = payload.message
       }
     },
 
-    async get_products_by_sold (){
+    async get_products_by_sold (limit = 12, page = 1 ){
       const config = {
         headers: {
           'Accept': 'application/json'
         }
       };
 
+      const params = {
+        sortBy: 'sold',
+        order: 'desc',
+        limit: limit,
+        page: page
+      };
+
       try {
-        const res = await axios.get(`${apiUrl}/api/product/get-products?sortBy=sold&order=desc&limit=3`, config);
+        const res = await axios.get(`${apiUrl}/products/list/`, { ...config, params });
 
         if (res.status === 200) {
           const payload = res.data
-          this.products = payload.products
+          this.products_sold = payload.products
           this.message = payload.message
+          this.total_by_sold = payload.total_products;
           this.type = payload.type
         } else {
           const payload = res.data
-          this.products = null
+          this.products_sold = null
           this.message = payload.message
           this.type = payload.type
         }
@@ -128,7 +154,7 @@ export const useProductStore = defineStore('product', {
           errorType = err.response.data.type || errorType;
         }
         const payload = { "type": errorType, "message": errorMessage }
-        this.products = null
+        this.products_sold = null
         this.type = payload.type
         this.message = payload.message
       }
@@ -171,15 +197,20 @@ export const useProductStore = defineStore('product', {
       }
     },
 
-    async get_related_products (productId){
+    async get_related_products (productId, limit = 12, page = 1 ){
       const config = {
         headers: {
           'Accept': 'application/json'
         }
       };
 
+      const params = {
+        limit: limit,
+        page: page
+      };
+
       try {
-        const res = await axios.get(`${apiUrl}/products/related/${productId}`, config);
+        const res = await axios.get(`${apiUrl}/products/related/${productId}`, { ...config, params });
 
         if (res.status === 200 && !res.data.error) {
           const payload = res.data
@@ -208,7 +239,7 @@ export const useProductStore = defineStore('product', {
       }
     },
 
-    async get_filtered_products(category_id, price_range, sort_by, order)  {
+    async get_filtered_products(category_id, price_range, sort_by, order, limit = 12, page = 1 )  {
       const config = {
         headers: {
           'Accept': 'application/json',
@@ -220,7 +251,9 @@ export const useProductStore = defineStore('product', {
         category_id,
         price_range,
         sort_by,
-        order
+        order,
+        limit,
+        page
       });
 
       try {
@@ -253,7 +286,7 @@ export const useProductStore = defineStore('product', {
       }
     },
 
-    async get_search_products (search, category_id) {
+    async get_search_products (search, category_id, limit = 12, page = 1 ) {
       const config = {
         headers: {
           'Accept': 'application/json',
@@ -263,15 +296,18 @@ export const useProductStore = defineStore('product', {
 
       const body = JSON.stringify({
         search,
-        category_id
+        category_id,
+        page,
+        limit
       });
 
       try {
-        const res = await axios.post(`${apiUrl}/api/product/search`, body, config);
+        const res = await axios.post(`${apiUrl}/products/search`, body, config);
 
         if (res.status === 200 && !res.data.error) {
           const payload = res.data
           this.search_products= payload.search_products
+          this.total_search_products = payload.total_products
           this.message = payload.message
           this.type = payload.type
         } else {

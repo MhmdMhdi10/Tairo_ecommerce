@@ -377,7 +377,7 @@ const conversations = ref([
       },
       {
         type: 'received',
-        text: 'Hey, have you had a chance to review the market research report for the new product launch?',
+        text: 'Hey, have you had a chance to review the market research report for the new shop launch?',
         time: '4:04 pm',
         attachments: [],
       },
@@ -395,7 +395,7 @@ const conversations = ref([
       },
       {
         type: 'sent',
-        text: "I've scheduled a meeting for tomorrow at 10am to discuss the launch strategy for the new product. Can you send me the latest version of the product roadmap before the meeting?",
+        text: "I've scheduled a meeting for tomorrow at 10am to discuss the launch strategy for the new shop. Can you send me the latest version of the shop roadmap before the meeting?",
         time: '9:00 am',
         attachments: [],
       },
@@ -407,7 +407,7 @@ const conversations = ref([
       },
       {
         type: 'received',
-        text: "I've sent you the updated product roadmap. I've also included some notes on the changes I made based on the market research.",
+        text: "I've sent you the updated shop roadmap. I've also included some notes on the changes I made based on the market research.",
         time: '9:05 am',
         attachments: [],
       },

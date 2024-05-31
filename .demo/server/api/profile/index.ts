@@ -13,7 +13,7 @@ async function getDemoData() {
       badge: '/img/icons/flags/united-states-of-america.svg',
       role: 'Product Manager',
       shortBio:
-        'Hey everyone, Iam a product manager from New York and Iam looking for new opportunities in the software business.',
+        'Hey everyone, Iam a shop manager from New York and Iam looking for new opportunities in the software business.',
       longBio:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Falli igitur possumus. Praeteritis, inquit, gaudeo. Duo Reges: constructio interrete. Idemne, quod iucunde? Quis enim redargueret? Non semper, inquam; Quid nunc honeste dicit? Eam tum adesse, cum dolor omnis absit; Negat enim summo bono afferre incrementum diem.',
       projects: 59,
@@ -264,7 +264,7 @@ async function getDemoData() {
           role: 'Product Manager',
           src: '/img/avatars/3.svg',
           badge: '/img/icons/flags/united-states-of-america.svg',
-          text: 'Maya is a great product manager. He is very passionate about his work and always delivers on time. I would recommend him to any company.',
+          text: 'Maya is a great shop manager. He is very passionate about his work and always delivers on time. I would recommend him to any company.',
           date: 'January 8, 2023',
         },
         {
@@ -272,7 +272,7 @@ async function getDemoData() {
           role: 'Product Manager',
           src: '/img/avatars/24.svg',
           badge: '/img/icons/flags/united-states-of-america.svg',
-          text: 'Maya is a great product manager. He is very passionate about his work and always delivers on time. I would recommend him to any company.',
+          text: 'Maya is a great shop manager. He is very passionate about his work and always delivers on time. I would recommend him to any company.',
           date: 'March 3, 2023',
         },
       ],

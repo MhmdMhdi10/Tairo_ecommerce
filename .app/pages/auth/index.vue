@@ -82,7 +82,7 @@ const onSubmit = handleSubmit(async (values) => {
     return
   }
 
-  router.push('/dashboards')
+  router.push('/')
 })
 </script>
 

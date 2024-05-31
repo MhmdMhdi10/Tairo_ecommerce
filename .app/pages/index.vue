@@ -1,13 +1,32 @@
 <script setup lang="ts">
+
+const {t} = useI18n();
+
 definePageMeta({
-  title: 'The Nuxt & Tailwind CSS dashboard system',
-  description:
-    'Nuxt & Tailwind CSS dashboard system template that comes with 100+ prebuilt pages and 40+ custom UI components.',
+  title: {
+    "fa": "فروشگاه آنلاین لوازم الکترونیکی",
+    "en": "Online Electronics Store"
+  },
+  description: {
+    "fa": "فروشگاه آنلاین ما انواع لوازم الکترونیکی با کیفیت بالا را ارائه می‌دهد. خرید آسان و امن با پشتیبانی مشتری بی‌نظیر.",
+    "en": "Our online store offers a wide range of high-quality electronic products. Easy and secure shopping with exceptional customer support."
+  },
   breadcrumb: {
-    label: 'Tairo',
+    label: 'Lalectro',
   },
   layout: 'landing',
 })
+
+useSeoMeta({
+  title: t('Lalectro'),
+  ogTitle: t('Lalectro'),
+  description: t('landing.description'),
+  ogDescription: t('landing.description'),
+  ogImage: 'https://example.com/image.png',
+  twitterCard: 'summary_large_image',
+})
+
+
 </script>
 
 <template>
@@ -19,10 +38,10 @@ definePageMeta({
 <!--    <LandingDemos :limit="12" />-->
 <!--    <LandingLayers />-->
 <!--    <LandingLayouts />-->
-<!--    <LandingFeatures />-->
+    <LandingFeatures />
 <!--    <LandingBenefits />-->
 <!--    <LandingCta />-->
-<!--    <LandingContent />-->
-<!--    <LandingFooter />-->
+    <LandingContent />
+    <LandingFooter />
   </div>
 </template>

@@ -85,7 +85,7 @@ const { locale, locales } = useI18n()
               class="whitespace-nowrap font-sans text-sm"
               :class="!isOpen ? 'hidden' : 'block'"
             >
-              {{ item.name }}
+              {{ item.name[locale] }}
             </span>
           </NuxtLink>
           <div
@@ -103,7 +103,7 @@ const { locale, locales } = useI18n()
               class="whitespace-nowrap font-sans text-sm"
               :class="!isOpen ? 'hidden' : 'block'"
             >
-              {{ item.name }}
+              {{ item.name[locale] }}
             </span>
           </button>
         </li>
@@ -136,7 +136,7 @@ const { locale, locales } = useI18n()
               class="whitespace-nowrap font-sans text-sm"
               :class="!isOpen ? 'hidden' : 'block'"
             >
-              {{ item.name }}
+              {{ item.name[locale] }}
             </span>
           </NuxtLink>
           <div
@@ -154,7 +154,7 @@ const { locale, locales } = useI18n()
               class="whitespace-nowrap font-sans text-sm"
               :class="!isOpen ? 'hidden' : 'block'"
             >
-              {{ item.name }}
+              {{ item.name[locale] }}
             </span>
           </button>
         </li>

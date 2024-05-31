@@ -1,85 +1,109 @@
 <script setup lang="ts">
-const year = new Date().getFullYear()
+const year = new Date().getFullYear();
+
+const {t} = useI18n()
+
+
+
 </script>
 
 <template>
-  <footer
-    class="dark:bg-muted-900 border-muted-200 dark:border-muted-700 relative border-t bg-white"
-  >
-    <NuxtLink
-      to="https://cssninja.io"
-      class="dark:bg-muted-900 absolute inset-x-0 -top-4 mx-auto flex h-9 w-14 items-center justify-center bg-white"
-    >
-      <img
-        class="h-7 w-7"
-        src="/img/logos/cssninja-logo-icon.svg"
-        alt="Css Ninja logo"
-        height="28"
-        width="28"
-        loading="lazy"
-        decoding="async"
-      />
-    </NuxtLink>
-    <div
-      class="ltablet:flex-row mx-auto flex max-w-7xl flex-col items-center justify-between px-6 py-8 lg:flex-row"
-    >
-      <NuxtLink
-        to="/"
-        aria-label="Go to Tairo homepage"
-        class="ltablet:w-1/5 block w-full lg:w-1/5"
-      >
-        <TairoLogoText
-          class="text-muted-300 ltablet:mx-0 mx-auto h-6 transition-all duration-200 lg:mx-0"
+  <footer class="dark:bg-muted-900 border-muted-200 dark:border-muted-700 relative border-t bg-white py-8">
+    <!-- Company Logo -->
+    <div class="flex justify-center mb-4">
+      <NuxtLink to="/" aria-label="Go to Lalectro homepage">
+        <img
+          src="/img/logos/Lalectro Logos/Lalectro_Main_White_Done.png"
+          alt="Lalectro Logo"
+          class="h-8"
         />
       </NuxtLink>
-      <div
-        class="ltablet:mt-0 ltablet:gap-6 mt-6 flex flex-wrap items-center justify-center gap-4 lg:mt-0 lg:gap-6"
-      >
-        <NuxtLink
-          to="/demos"
-          class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 text-sm transition-colors duration-300"
-        >
-          Demo pages
-        </NuxtLink>
+    </div>
 
+    <!-- Navigation Links -->
+    <div class="max-w-7xl mx-auto px-6 mt-6">
+      <div class="flex justify-center gap-6">
         <NuxtLink
-          to="/documentation"
-          class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 text-sm transition-colors duration-300"
+          to="/product"
+          class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 text-sm transition-colors"
         >
-          Documentation
+          {{ t("Shop") }}
         </NuxtLink>
         <NuxtLink
-          to="https://github.com/shuriken-ui"
-          target="_blank"
-          rel="noopener"
-          class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 text-sm transition-colors duration-300"
+          to="/about"
+          class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 text-sm transition-colors"
         >
-          Shuriken UI
+          {{ t("About Us") }}
         </NuxtLink>
         <NuxtLink
-          to="https://cssninja.io/faq/support"
-          target="_blank"
-          rel="noopener"
-          class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 text-sm transition-colors duration-300"
+          to="/contact"
+          class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 text-sm transition-colors"
         >
-          Support
+          {{ t("Contact Us") }}
+        </NuxtLink>
+        <NuxtLink
+          to="/support"
+          class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 text-sm transition-colors"
+        >
+          {{ t("Support") }}
         </NuxtLink>
       </div>
-      <div
-        class="text-muted-500 dark:text-muted-400 ltablet:w-1/5 ltablet:justify-end ltablet:mt-0 mt-6 flex w-full items-center justify-center text-sm lg:mt-0 lg:w-1/5 lg:justify-end"
-      >
-        <span>
-          ©
-          <NuxtLink
-            to="https://cssninja.io"
-            target="_blank"
-            rel="noopener"
-            class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 text-sm transition-colors duration-300"
-          >
-            Css Ninja
-          </NuxtLink>
-          2018-{{ year }}.
-        </span>
+    </div>
+
+    <!-- Contact Information -->
+    <div class="flex justify-center mt-6">
+      <div class="text-sm flex">
+        <BaseParagraph class="text-muted-500 dark:text-muted-400">{{ t("Phone: 33-110-618") }}</BaseParagraph>
+        <div class="mx-4"></div>
+        <BaseParagraph class="text-muted-500 dark:text-muted-400">{{ t("Address: No. 5, Barbad Complex, Barbad Alley, South Lalehzar Street, Tehran") }}</BaseParagraph>
+      </div>
+    </div>
+
+    <!-- Legal Links -->
+    <div class="flex justify-center mt-4">
+      <div class="text-sm">
+        <NuxtLink
+          to="/privacy-policy"
+          class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400"
+        >
+          {{ t("Privacy Policy") }}
+        </NuxtLink>
+        <span class="mx-2">|</span>
+        <NuxtLink
+          to="/terms-conditions"
+          class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400"
+        >
+          {{ t("Terms & Conditions") }}
+        </NuxtLink>
+      </div>
+    </div>
+
+<!--    &lt;!&ndash; Social Media Links &ndash;&gt;-->
+<!--    <div class="flex justify-center gap-6 mt-6">-->
+<!--      <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="text-muted-500 hover:text-primary-500 dark:text-muted-400 dark:hover:text-primary-400 text-sm transition-colors">-->
+<!--        <i class="fab fa-facebook-f"> <Icon name="fa6-brands:facebook" class="mx-auto h-4 w-4" /> </i>-->
+<!--      </a>-->
+<!--      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter" class="text-muted-500 hover:text-primary-500 dark:text-muted-400 dark:hover:text-primary-400 text-sm transition-colors">-->
+<!--        <i class="fab fa-twitter"> <Icon name="fa6-brands:twitter" class="mx-auto h-4 w-4" /> </i>-->
+<!--      </a>-->
+<!--      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="text-muted-500 hover:text-primary-500 dark:text-muted-400 dark:hover:text-primary-400 text-sm transition-colors">-->
+<!--        <i class="fab fa-instagram"> <Icon name="fa6-brands:instagram" class="mx-auto h-4 w-4" /> </i>-->
+<!--      </a>-->
+<!--    </div>-->
+
+    <!-- Copyright and Back to Top -->
+    <div class="flex justify-center items-center mt-6">
+      <span class="text-muted-500 dark:text-muted-400 text-sm">
+        © Lalectro {{ year }}{{ t(". All rights reserved.") }}
+      </span>
+    </div>
+
+    <div class="border-t border-muted-200 dark:border-muted-700 mt-6 py-4">
+      <div class="flex justify-center gap-6 text-sm">
+        <span class="text-muted-500 dark:text-muted-400">{{ t("Call if you need a website: +98 9908419824") }}</span>
+        <a href="https://t.me/MohammadMahdiFarahani10" target="_blank" rel="noopener noreferrer" class="text-muted-500 hover=text-primary-500 dark:text-muted-400 dark:hover=text-primary-400">
+          {{ t("Telegram") }} <Icon name="fa6-brands:telegram" class="mx-auto h-4 w-4" />
+        </a>
       </div>
     </div>
   </footer>

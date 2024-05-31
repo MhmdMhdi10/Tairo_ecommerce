@@ -19,6 +19,8 @@ const isActive = computed(() => {
 const buttonRef = ref<HTMLElement>()
 const isOpen = ref(isActive.value)
 
+const { locale } = useI18n()
+
 function onDropClick() {
   isOpen.value = !isOpen.value
   if (!isOpen.value) {
@@ -48,7 +50,7 @@ function onDropClick() {
           !props.expanded ? 'hidden' : 'block',
         ]"
       >
-        {{ item.name }}
+        {{ item.name[locale] }}
       </span>
       <span
         class="ms-auto items-center justify-center"
@@ -90,7 +92,7 @@ function onDropClick() {
             class="whitespace-nowrap font-sans text-[0.85rem]"
             :class="[!props.expanded ? 'hidden' : 'block']"
           >
-            {{ child.name }}
+            {{ child.name[locale] }}
           </span>
         </NuxtLink>
       </li>

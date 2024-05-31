@@ -1,9 +1,6 @@
 export default defineAppConfig({
   tairo: {
     collapse: {
-
-
-
       toolbar: {
         enabled: true,
         showTitle: true,
@@ -24,9 +21,9 @@ export default defineAppConfig({
           // {
           //   component: 'ToolbarPanelTest',
           // },
-          {
-            component: 'ToolbarAccountMenu',
-          },
+          // {
+          //   component: 'ToolbarAccountMenu',
+          // },
         ],
       },
       circularMenu: {
@@ -46,9 +43,9 @@ export default defineAppConfig({
           // {
           //   component: 'DemoCircularMenuActivity',
           // },
-          {
-            component: 'CircularToolbarPanelTest',
-          },
+          // {
+          //   component: 'CircularToolbarPanelTest',
+          // },
 
         ],
       },
@@ -61,14 +58,14 @@ export default defineAppConfig({
         },
         items: [
           {
-            name: 'Home',
+            name: {'en' : "Home", 'fa': "خانه"},
             icon: { name: 'ph:house-duotone', class: 'w-5 h-5' },
             to: '/',
           },
           {
-            name: 'Products',
+            name: {'en' : "Shop", 'fa': "فروشگاه"},
             icon: { name: 'ph:basket-duotone', class: 'w-5 h-5' },
-            to: '/product/',
+            to: '/shop/',
           },
           // {
           //   name: 'Blog',
@@ -76,17 +73,17 @@ export default defineAppConfig({
           //   to: '/blog/',
           // },
           {
-            name: 'our group',
+            name: {'en' : "Our Team", 'fa': "تیم ما"},
             icon: { name: 'ph:users-three-duotone', class: 'w-5 h-5' },
             activePath: '/documentation/',
             children: [
               {
-                name: 'contact us',
+                name: {'en' : "Contact Us", 'fa': "تماس با ما"},
                 to: '/contact/',
                 icon: { name: 'ph:chalkboard-simple-duotone', class: 'w-4 h-4' },
               },
               {
-                name: 'about us',
+                name: {'en' : "About Us", 'fa': "درباره ما"},
                 to: '/about/',
                 icon: { name: 'ph:info-duotone', class: 'w-4 h-4' },
               },
@@ -97,33 +94,38 @@ export default defineAppConfig({
               // },
             ],
           },
-          // {
-          //   name: 'help for customers',
-          //   icon: { name: 'ph:circle-wavy-question', class: 'w-5 h-5' },
-          //   activePath: '/documentation',
-          //   children: [
-          //     {
-          //       name: 'customer support',
-          //       to: '/support',
-          //       icon: { name: 'ph:sidebar-duotone', class: 'w-4 h-4' },
-          //     },
-          //     {
-          //       name: 'privacy policy',
-          //       to: '/policy/privacy/',
-          //       icon: { name: 'ph:sidebar-duotone', class: 'w-4 h-4' },
-          //     },
-          //     {
-          //       name: 'shipping policy',
-          //       to: '/policy/shipping/',
-          //       icon: { name: 'ph:sidebar-duotone', class: 'w-4 h-4' },
-          //     },
-          //     {
-          //       name: 'return policy',
-          //       to: '/policy/return/',
-          //       icon: { name: 'ph:sidebar-duotone', class: 'w-4 h-4' },
-          //     },
-          //   ],
-          // },
+          {
+            name: {'en' : "Help For Customers", 'fa': "راهنمای مشتریان"},
+            icon: { name: 'ph:circle-wavy-question', class: 'w-5 h-5' },
+            activePath: '/documentation',
+            children: [
+              {
+                name: {'en' : "Customer Support", 'fa': "پشتیبانی کاربران"},
+                to: '/support',
+                icon: { name: 'ph:sidebar-duotone', class: 'w-4 h-4' },
+              },
+              {
+                name: {'en' : "Privacy Policy", 'fa': "سیاست حفظ حریم خصوصی"},
+                to: '/policy/privacy/',
+                icon: { name: 'ph:sidebar-duotone', class: 'w-4 h-4' },
+              },
+              {
+                name: {'en' : "Shipping Policy", 'fa': "سیاست حمل و نقل"},
+                to: '/policy/shipping/',
+                icon: { name: 'ph:sidebar-duotone', class: 'w-4 h-4' },
+              },
+              {
+                name: {'en' : "Return Policy", 'fa': "سیاست بازگرداندن کالا"},
+                to: '/policy/return/',
+                icon: { name: 'ph:sidebar-duotone', class: 'w-4 h-4' },
+              },
+              {
+                name: {'en' : "Terms And Conditions", 'fa': "شرایط و ضوابط"},
+                to: '/policy/terms/',
+                icon: { name: 'ph:sidebar-duotone', class: 'w-4 h-4' },
+              },
+            ],
+          },
           // {
           //   name: 'Search',
           //   icon: { name: 'ph:magnifying-glass-duotone', class: 'w-5 h-5' },
@@ -147,7 +149,7 @@ export default defineAppConfig({
     },
     panels: [
       {
-        name: 'language',
+        name: "language",
         position: 'right',
         component: 'DemoPanelLanguage',
       },

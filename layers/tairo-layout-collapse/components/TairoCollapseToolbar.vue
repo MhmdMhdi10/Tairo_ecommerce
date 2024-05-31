@@ -16,6 +16,8 @@ const route = useRoute()
 const showNavBurger = computed(() => {
   return props.collapse && app.tairo.collapse?.toolbar?.showNavBurger
 })
+
+const { locale } = useI18n()
 </script>
 
 <template>
@@ -32,7 +34,7 @@ const showNavBurger = computed(() => {
       weight="light"
       class="text-muted-800 hidden dark:text-white md:block"
     >
-      <slot name="title">{{ route.meta.title }}</slot>
+      <slot name="title">{{ route.meta.title[locale] }}</slot>
     </BaseHeading>
 
     <div class="ms-auto"></div>

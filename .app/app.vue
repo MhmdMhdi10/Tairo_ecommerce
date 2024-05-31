@@ -2,7 +2,7 @@
 
 const route = useRoute()
 const app = useAppConfig()
-const { setLocaleCookie, setLocale} = useI18n({ useScope: 'local' });
+const { setLocaleCookie, setLocale, locale: i18nlocale} = useI18n({ useScope: 'local' });
 
 const locale = ref(useCookie('i18n_redirected', {
   watch:true,
@@ -27,7 +27,7 @@ watch([locale], () => {
  * @see https://nuxt.com/docs/getting-started/seo-meta
  */
 useHead({
-  title: () => route.meta?.title ?? '',
+  title: () => route.meta?.title[locale] ?? '',
   titleTemplate: (titleChunk) => {
     return titleChunk
       ? `${titleChunk} - ${app.tairo.title}`
@@ -46,7 +46,7 @@ useHead({
   ],
 
   meta: [
-    { name: 'description', content: () => route.meta.description ?? 'The most advanced Nuxt and Tailwind CSS dashboard template' },
+    { name: 'description', content: () => route.meta.description ?? '' },
     {
       name: 'twitter:card',
       content: 'summary_large_image',
@@ -73,7 +73,7 @@ useHead({
         route.meta.description ||
           (route.meta.preview
             ? `${route.meta.preview?.title} - ${route.meta.preview?.description}`
-            : 'Nuxt & Tailwind CSS dashboard system'),
+            : ''),
       )}&url=${encodeURIComponent(
         'https://media.cssninja.io/content/products/logos/tairo-text-white.svg',
       )}&previewUrl=${encodeURIComponent(
@@ -88,23 +88,6 @@ useHead({
 
 <template>
   <div>
-    <!--
-      Global app search modal
-      @see .demo/components/DemoAppSearch.vue
-    -->
-    <DemoAppSearch />
-    <!--
-      Global app layout switcher
-      @see .demo/components/DemoAppLayoutSwitcher.vue
-    -->
-    <DemoAppLayoutSwitcher />
-
-    <!--
-      Vue Axe Popup
-      @see .demo/plugins/vue-axe.client.ts
-    -->
-    <VueAxePopup />
-
     <NuxtLayout>
       <NuxtLoadingIndicator color="rgb(var(--color-primary-500))" />
       <NuxtPage />

@@ -1,3 +1,9 @@
+<script setup lang="ts">
+
+const {t} = useI18n()
+
+</script>
+
 <template>
   <div
     class="ltablet:gap-y-0 relative z-30 mt-32 grid grid-cols-12 gap-y-8 overflow-hidden sm:w-full sm:gap-x-16 lg:gap-y-0"
@@ -7,8 +13,9 @@
         <div class="text-center">
           <BaseText
             class="text-primary-500 mb-2 text-[0.65rem] uppercase tracking-wider"
-            >Nuxt Ready</BaseText
           >
+            Lalectro.com
+          </BaseText>
           <BaseHeading
             as="h2"
             size="4xl"
@@ -16,15 +23,13 @@
             lead="tight"
             class="text-muted-800 mx-auto mb-4 max-w-xl dark:text-white"
           >
-            An advanced Nuxt app setup
+            {{ t("Exceptional Service, Anywhere") }}
           </BaseHeading>
           <BaseParagraph
             size="lg"
             class="text-muted-500 dark:text-muted-100 ptablet:max-w-lg ptablet:mx-auto mb-4 max-w-2xl"
           >
-            Tairo is a powerful Nuxt app starter with a robust and extensible
-            codebase. It brings everything you need to build a professional and
-            beautiful frontend for your app.
+            {{ t("At") }} <strong>Lalectro.com</strong>{{t(", we offer reliable shipping to nearly any location, a wide range of electrical and industrial products, and top-notch customer support. No matter where you are, we can help you get the parts and components you need.") }}
           </BaseParagraph>
           <div
             class="ptablet:max-w-md ptablet:mx-auto mt-6 grid scale-90 grid-cols-3"
@@ -41,13 +46,13 @@
                   class="nui-mask nui-mask-hexed dark:bg-muted-800 flex h-[76px] w-[76px] items-center justify-center bg-white"
                 >
                   <Icon
-                    name="simple-icons:nuxtdotjs"
+                    name="mdi:truck-delivery-outline"
                     class="text-success-500 relative -top-0.5 h-7 w-7"
                   />
                 </div>
               </div>
               <BaseText size="sm" class="text-muted-500 dark:text-muted-300"
-                >Nuxt</BaseText
+                >{{ t("Global Shipping") }}</BaseText
               >
             </div>
             <!-- Col -->
@@ -62,15 +67,16 @@
                   class="nui-mask nui-mask-hexed dark:bg-muted-800 flex h-[76px] w-[76px] items-center justify-center bg-white"
                 >
                   <Icon
-                    name="simple-icons:tailwindcss"
+                    name="mdi:archive-outline"
                     class="h-8 w-8 text-sky-500"
                   />
                 </div>
               </div>
               <BaseText size="sm" class="text-muted-500 dark:text-muted-300"
-                >Tailwind CSS</BaseText
+                >{{ t("Wide Product Range") }}</BaseText
               >
             </div>
+
             <!-- Col -->
             <div class="flex flex-col items-center text-center">
               <div
@@ -83,13 +89,13 @@
                   class="nui-mask nui-mask-hexed dark:bg-muted-800 flex h-[76px] w-[76px] items-center justify-center bg-white"
                 >
                   <Icon
-                    name="nonicons:typescript-16"
+                    name="mdi:headset"
                     class="h-6 w-6 text-indigo-500"
                   />
                 </div>
               </div>
               <BaseText size="sm" class="text-muted-500 dark:text-muted-300"
-                >Typescript</BaseText
+                >{{ t("Customer Support") }}</BaseText
               >
             </div>
           </div>
