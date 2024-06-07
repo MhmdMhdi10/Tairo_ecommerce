@@ -13,7 +13,7 @@ const {t} = useI18n()
     <div class="flex justify-center mb-4">
       <NuxtLink to="/" aria-label="Go to Lalectro homepage">
         <img
-          src="/img/logos/Lalectro Logos/Lalectro_Main_White_Done.png"
+          src="/img/logos/Lalectro_Logos/Lalectro_Main_White_Done.png"
           alt="Lalectro Logo"
           class="h-8"
         />
