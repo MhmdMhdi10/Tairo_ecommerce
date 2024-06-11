@@ -24,7 +24,7 @@ const {t} = useI18n()
     <div class="max-w-7xl mx-auto px-6 mt-6">
       <div class="flex justify-center gap-6">
         <NuxtLink
-          to="/product"
+          to="/shop"
           class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400 text-sm transition-colors"
         >
           {{ t("Shop") }}
@@ -63,14 +63,14 @@ const {t} = useI18n()
     <div class="flex justify-center mt-4">
       <div class="text-sm">
         <NuxtLink
-          to="/privacy-policy"
+          to="/policy/privacy"
           class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400"
         >
           {{ t("Privacy Policy") }}
         </NuxtLink>
         <span class="mx-2">|</span>
         <NuxtLink
-          to="/terms-conditions"
+          to="/policy/terms"
           class="text-muted-600 hover:text-primary-500 dark:text-muted-200 dark:hover:text-primary-400"
         >
           {{ t("Terms & Conditions") }}

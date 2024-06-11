@@ -22,7 +22,7 @@ useSeoMeta({
   ogTitle: t('Lalectro'),
   description: t('landing.description'),
   ogDescription: t('landing.description'),
-  ogImage: 'https://example.com/image.png',
+  // ogImage: 'https://example.com/image.png',
   twitterCard: 'summary_large_image',
 })
 

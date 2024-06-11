@@ -2,7 +2,7 @@
 const {t} = useI18n()
 
 function callUs() {
-  window.location.href = 'tel:YOUR_PHONE_NUMBER';
+  window.location.href = 'tel:02133110618';
 }
 
 

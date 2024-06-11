@@ -10,6 +10,14 @@ export default defineI18nConfig(() => ({
         },
       },
 
+      "contactUs": {
+        "title": "Contact Us",
+        "description": "Call Us",
+        "ourContactInformation" : 'Our Contact information',
+        'SecondPhoneNumber': 'Second Phone Number',
+        'CellphoneNumber' : 'Cellphone Number',
+      },
+
       "customerSupport": {
         "title": "Customer Support",
         "description": "Get help and find answers to your questions.",
@@ -217,6 +225,17 @@ export default defineI18nConfig(() => ({
         "description": "Our online store offers a wide range of high-quality electronic products. Easy and secure shopping with exceptional customer support."
       },
 
+      "contact" : {
+        "Phone Number" : "33−11−0618",
+        "secondPhoneNumber" : "36-05-7893",
+        'support': '0912-537-3605',
+        'support2': '0935-383-6613'
+
+      },
+
+      'Support 2' : "Support 2"
+
+
     },
 
     fa: {
@@ -237,6 +256,9 @@ export default defineI18nConfig(() => ({
       "contactUs": {
         "title": "تماس با ما",
         "description": "با ما تماس بگیرید",
+        "ourContactInformation" : 'اطلاعات تماس ما',
+        'SecondPhoneNumber': 'شماره تلفن دوم',
+        'CellphoneNumber' : 'شماره تلفن همراه'
       },
 
       "customerSupport": {
@@ -448,14 +470,21 @@ export default defineI18nConfig(() => ({
       "Phone Number": "شماره تلفن",
       "secondPhoneNumber": "شماره تلفن دوم",
 
-      contact : {
+
+      "contact" : {
         "Phone Number" : "۳۳−۱۱−۰۶۱۸",
-        "secondPhoneNumber" : ""
+        "secondPhoneNumber" : "۳۶-۰۵-۷۸۹۳",
+        'support': '۰۹۱۲-۵۳۷-۳۶۰۵',
+        'support2': '۰۹۳۵-۳۸۳-۶۶۱۳'
+
       },
 
+      'Support 2' : "پشتیبانی ۲",
 
 
-      "Return Policy": "سیاست بازگشت",
+
+
+    "Return Policy": "سیاست بازگشت",
       "Learn about our return policy and how to return a product.": "با سیاست بازگشت ما و نحوه بازگرداندن محصول آشنا شوید.",
       "We want you to be completely satisfied with your purchase. However, there are certain conditions under which products cannot be returned:": "ما می‌خواهیم که شما از خرید خود کاملاً راضی باشید. با این حال، شرایط خاصی وجود دارد که تحت آنها محصولات قابل بازگشت نیستند:",
       "Broken or used products cannot be returned.": "محصولات شکسته یا استفاده شده قابل بازگشت نیستند.",
