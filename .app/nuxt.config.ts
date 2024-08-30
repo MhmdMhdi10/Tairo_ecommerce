@@ -55,9 +55,9 @@ export default defineNuxtConfig({
     // when using layers and/or in large projects
     watcher: 'chokidar-granular',
     // Write early hints when using node server.
-    writeEarlyHints: true,
+    writeEarlyHints: false,
     // Render JSON payloads with support for revivifying complex types.
-    renderJsonPayloads: true,
+    renderJsonPayloads: false,
   },
 
   typescript: {
