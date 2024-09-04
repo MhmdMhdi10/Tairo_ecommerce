@@ -1,6 +1,6 @@
+version: '3.8'
+
 services:
-  
-  
   # Service for the accountract front
   accountract-front:
     build: .
@@ -16,7 +16,23 @@ services:
       - /usr/src/app/.app/.output
       - /usr/src/app/.demo/.nuxt
     ports:
-      - "80:3000"
+      - "3000:3000"
+    networks:
+      - accountract-network
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    container_name: my_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/ssl/cert.pem:/etc/ssl/cert.pem
+      - /etc/ssl/key.pem:/etc/ssl/key.pem
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - accountract-front
     networks:
       - accountract-network
     restart: always
@@ -25,9 +41,6 @@ networks:
   accountract-network:
     driver: bridge
 
-
-
+volumes:
   redis_data:
-
-  # Volume for gpt database data
   gpt-db-data:
