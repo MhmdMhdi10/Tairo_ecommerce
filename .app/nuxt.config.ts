@@ -39,8 +39,8 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'nuxt-swiper',
     '@nuxtjs/i18n',
-    '@nuxt/image-edge'
-
+    '@nuxt/image-edge',
+    '@nuxtjs/sitemap'
   ],
   css: [
     '~/assets/css/colors.css',
@@ -50,15 +50,6 @@ export default defineNuxtConfig({
     '~/assets/fontiran.css'
   ],
 
-  experimental: {
-    // using chokidar-granular watcher run faster
-    // when using layers and/or in large projects
-    watcher: 'chokidar-granular',
-    // Write early hints when using node server.
-    writeEarlyHints: false,
-    // Render JSON payloads with support for revivifying complex types.
-    renderJsonPayloads: false,
-  },
 
   typescript: {
     tsConfig: {
@@ -100,6 +91,9 @@ export default defineNuxtConfig({
       target: 'esnext',
     },
   },
+
+
+
   i18n: {
     strategy: 'no_prefix',
     locales: [
