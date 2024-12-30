@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import scope from "ultrahtml/dist/transformers/scope";
+
 
 const props = defineProps<{
   src: string;

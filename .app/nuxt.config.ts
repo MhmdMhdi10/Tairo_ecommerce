@@ -30,6 +30,12 @@ export default defineNuxtConfig({
     '../layers/tairo-layout-topnav',
     '../layers/tairo',
   ],
+
+  site: {
+    url: 'https://lalectro.com',
+    name: 'Lalectro'
+  },
+
   modules: [
     /**
      * Swiper is a nuxt module that allows us to use swiper in nuxt
@@ -40,8 +46,10 @@ export default defineNuxtConfig({
     'nuxt-swiper',
     '@nuxtjs/i18n',
     '@nuxt/image-edge',
+    '@nuxtjs/seo',
     '@nuxtjs/sitemap'
   ],
+
   css: [
     '~/assets/css/colors.css',
     '@fontsource-variable/fira-code/index.css',
@@ -49,7 +57,6 @@ export default defineNuxtConfig({
     '@fontsource-variable/karla/index.css',
     '~/assets/fontiran.css'
   ],
-
 
   typescript: {
     tsConfig: {
@@ -65,6 +72,7 @@ export default defineNuxtConfig({
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
     },
   },
+
   routeRules: {
     ...demoRules,
     ...landingRules,
@@ -79,6 +87,7 @@ export default defineNuxtConfig({
       },
     },
   },
+
   vite: {
     define: {
       'process.test': false,
@@ -91,8 +100,6 @@ export default defineNuxtConfig({
       target: 'esnext',
     },
   },
-
-
 
   i18n: {
     strategy: 'no_prefix',
@@ -118,5 +125,7 @@ export default defineNuxtConfig({
     'pages/shipping/**/*',
     // 'pages/support/**/*',
     'pages/z',
-  ]
+  ],
+
+  compatibilityDate: '2024-09-05'
 })

@@ -1,18 +1,49 @@
-FROM node:20
+# Build stage
+FROM bitnami/node:20 AS build
 
+# Install pnpm with corepack
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+WORKDIR /app
+
+# Prepare pnpm dependencies using lockfile, patches and docker cache
+# COPY pnpm-lock.yaml .
+# COPY patches/ patches/
+COPY .app/.env .app/
 COPY package.json .
 COPY pnpm-workspace.yaml .
 COPY .app/package.json .app/
 COPY .demo/package.json .demo/
-
-# Install dependencies using pnpm
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm fetch
 RUN command -v pnpm || npm install -g pnpm
-COPY . .
+
+# Install and build the app
+COPY  . .
 RUN pnpm install
 RUN pnpm build
-CMD ["node", ".app/.output/server/index.mjs"]
-#RUN node .app/.output/server/index.mjs
+
+# Production stage
+FROM bitnami/node:20 AS prod
+WORKDIR /app
+
+# Create a non-root user
+RUN groupadd -g 10001 nuxt && \
+  useradd -u 10001 -g nuxt nuxt \
+  && chown -R nuxt:nuxt /app
+
+# Switch to the non-root user
+USER nuxt:nuxt
+
+# Set the environment to production
+ENV NODE_ENV=production
+
+# Copy the built app from the build stage
+COPY --chown=nuxt:nuxt --from=build /app/.app/.output .output
+
+
+
+# Expose the port
+EXPOSE 3000
+
+# Start the app
+CMD ["node", ".output/server/index.mjs"]
